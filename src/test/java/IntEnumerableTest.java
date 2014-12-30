@@ -30,4 +30,28 @@ public class IntEnumerableTest {
 
         assertThat(IntEnumerable.min(enumerable).get(), is(-3));
     }
+
+    @Test
+    public void emptyMaxIsReturned() {
+        Enumerable<Integer> integers = new Enumerable<>();
+
+        Optional<Integer> max = IntEnumerable.max(integers);
+
+        assertFalse(max.isPresent());
+    }
+
+    @Test
+    public void positiveMaxIsReturned() {
+        Enumerable<Integer> enumerable = Enumerable.enumerable(1, 2, 3);
+
+        assertThat(IntEnumerable.max(enumerable).get(), is(3));
+    }
+
+    @Test
+    public void negativeMaxIsReturned() {
+        Enumerable<Integer> enumerable = Enumerable.enumerable(-1, -2, -3);
+
+        assertThat(IntEnumerable.max(enumerable).get(), is(-1));
+    }
+
 }
