@@ -10,7 +10,7 @@ public class DoubleEnumerableTest {
 
     @Test
     public void emptyMinIsReturned() {
-        Enumerable<Double> doubles = new Enumerable<>();
+        Enumerable<Double> doubles = Enumerable.empty();
 
         Optional<Double> min = DoubleEnumerable.min(doubles);
 
@@ -33,7 +33,7 @@ public class DoubleEnumerableTest {
 
     @Test
     public void emptyMaxIsReturned() {
-        Enumerable<Double> doubles = new Enumerable<>();
+        Enumerable<Double> doubles = Enumerable.empty();
 
         Optional<Double> max = DoubleEnumerable.max(doubles);
 

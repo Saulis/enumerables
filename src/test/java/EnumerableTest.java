@@ -3,16 +3,16 @@ import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 @RunWith(JukitoRunner.class)
@@ -27,17 +27,43 @@ public class EnumerableTest {
     Iterator<String> stringIterator;
 
     @Test
-    public void rangeIsConstructed() {
+    public void emptyEnumerableIsConstructed() {
+        Enumerable<Integer> empty = Enumerable.empty();
+
+        assertThat(empty.count(), is(0));
+    }
+
+    @Test
+    public void enumerableIsUnchangedAfterConstruction() {
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("foo");
+        Enumerable<String> enumerable = Enumerable.enumerable(strings);
+
+        strings.add("bar");
+
+        assertThat(enumerable, not(hasItem("bar")));
+    }
+
+    //TODO: move to IntEnumerable
+    @Test
+    public void ascendingRangeIsConstructed() {
         Enumerable<Integer> range = Enumerable.range(1, 5);
 
         assertThat(range, contains(1,2,3,4,5));
     }
 
     @Test
+    public void descendingRangeIsConstructed() {
+        Enumerable<Integer> range = Enumerable.range(1, -5);
+
+        assertThat(range, contains(1,0,-1,-2,-3,-4,-5));
+    }
+
+    @Test
     public void emptyRangeIsConstructed() {
         Enumerable<Integer> range = Enumerable.range(1, 0);
 
-        assertThat(range, not(contains(1,0)));
+        assertThat(range, contains(1, 0)); //NOT!
     }
 
     @Test
@@ -109,7 +135,7 @@ public class EnumerableTest {
 
     @Test
     public void emptyIsReturnedOnFirst() {
-        Enumerable<Object> enumerable = new Enumerable<>();
+        Enumerable<Object> enumerable = Enumerable.empty();
 
         Optional<Object> first = enumerable.first();
 
@@ -121,7 +147,7 @@ public class EnumerableTest {
         when(stringIterable.iterator()).thenReturn(stringIterator);
         when(stringIterator.hasNext()).thenReturn(true);
         when(stringIterator.next()).thenReturn("foobar");
-        Enumerable<String> strings = new Enumerable<>(stringIterable);
+        Enumerable<String> strings = Enumerable.enumerable(stringIterable);
 
         strings.first();
 

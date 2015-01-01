@@ -10,7 +10,7 @@ public class IntEnumerableTest {
 
     @Test
     public void emptyMinIsReturned() {
-        Enumerable<Integer> integers = new Enumerable<>();
+        Enumerable<Integer> integers = Enumerable.empty();
 
         Optional<Integer> min = IntEnumerable.min(integers);
 
@@ -33,7 +33,7 @@ public class IntEnumerableTest {
 
     @Test
     public void emptyMaxIsReturned() {
-        Enumerable<Integer> integers = new Enumerable<>();
+        Enumerable<Integer> integers = Enumerable.empty();
 
         Optional<Integer> max = IntEnumerable.max(integers);
 
