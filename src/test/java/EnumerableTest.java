@@ -1,30 +1,15 @@
-import com.google.inject.Inject;
-import org.jukito.JukitoRunner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
 
-@RunWith(JukitoRunner.class)
 public class EnumerableTest {
 
     private final String[] stringArray = new String[] { "foo", "bar" };
-
-    @Inject
-    Iterable<String> stringIterable;
-
-    @Inject
-    Iterator<String> stringIterator;
 
     @Test
     public void emptyEnumerableIsConstructed() {
@@ -96,15 +81,6 @@ public class EnumerableTest {
     }
 
     @Test
-    public void itemsAreMapped() {
-        Enumerable<String> enumerable = Enumerable.enumerable("foo", "bar");
-
-        Enumerable<String> mapped = enumerable.map(x -> x + "bar");
-
-        assertThat(mapped, contains("foobar", "barbar"));
-    }
-
-    @Test
     public void itemsAreFiltered() {
         Enumerable<String> enumerable =
                 Enumerable.enumerable("foo", "foobar", "bar");
@@ -123,35 +99,4 @@ public class EnumerableTest {
         assertThat(aggregate, is("foobar"));
     }
 
-    @Test
-    public void firstIsReturned() {
-        Enumerable<String> enumerable = Enumerable.enumerable("foo", "bar");
-
-        Optional<String> first = enumerable.first();
-
-        assertTrue(first.isPresent());
-        assertThat(first.get(), is("foo"));
-    }
-
-    @Test
-    public void emptyIsReturnedOnFirst() {
-        Enumerable<Object> enumerable = Enumerable.empty();
-
-        Optional<Object> first = enumerable.first();
-
-        assertFalse(first.isPresent());
-    }
-
-    @Test
-    public void firstCallsNextOnlyOnce() {
-        when(stringIterable.iterator()).thenReturn(stringIterator);
-        when(stringIterator.hasNext()).thenReturn(true);
-        when(stringIterator.next()).thenReturn("foobar");
-        Enumerable<String> strings = Enumerable.enumerable(stringIterable);
-
-        strings.first();
-
-        verify(stringIterator, times(1)).hasNext();
-        verify(stringIterator, times(1)).next();
-    }
 }

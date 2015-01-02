@@ -50,11 +50,11 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public <R> Enumerable<R> map(Function<T, R> func) {
-        ArrayList<R> mappedItems = new ArrayList<>();
+        return new Enumerable<>(() -> new MapIterator<>(this, func));
+    }
 
-        forEach(x -> mappedItems.add(func.apply(x)));
-
-        return Enumerable.enumerable(mappedItems);
+    public Enumerable<T> take(long n) {
+        return new Enumerable<>(() -> new TakeIterator(this, n));
     }
 
     public Enumerable<T> filter(Predicate<T> predicate) {
