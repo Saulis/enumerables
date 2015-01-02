@@ -23,7 +23,7 @@ public class EnumerableTest {
     public void enumerableIsUnchangedAfterConstruction() {
         ArrayList<String> strings = new ArrayList<>();
         strings.add("foo");
-        Enumerable<String> enumerable = Enumerable.enumerable(strings);
+        Enumerable<String> enumerable = Enumerable.of(strings);
 
         strings.add("bar");
 
@@ -61,14 +61,14 @@ public class EnumerableTest {
 
     @Test
     public void enumerableIsConstructedFromArray() {
-        Enumerable<String> enumerable = Enumerable.enumerable(stringArray);
+        Enumerable<String> enumerable = Enumerable.of(stringArray);
 
         assertThat(enumerable.toList(), contains("foo", "bar"));
     }
 
     @Test
     public void enumerableIsConstructedFromArguments() {
-        Enumerable<String> enumerable = Enumerable.enumerable("foo", "bar");
+        Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
         assertThat(enumerable.toList(), contains("foo", "bar"));
     }
@@ -76,14 +76,14 @@ public class EnumerableTest {
     @Test
     public void enumerableIsConstructedFromCollection() {
         Enumerable<String> enumerable =
-                Enumerable.enumerable(Arrays.asList(stringArray));
+                Enumerable.of(Arrays.asList(stringArray));
 
         assertThat(enumerable.toList(), contains("foo", "bar"));
     }
 
     @Test
     public void itemsAreFlattened() {
-        Enumerable<String> enumerable = Enumerable.enumerable("foo", "bar");
+        Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
         String aggregate = enumerable.flatMap((acc, x) -> acc + x, "");
 
@@ -92,7 +92,7 @@ public class EnumerableTest {
 
     @Test
     public void sizeIsExactly() {
-        Enumerable<Integer> enumerable = Enumerable.enumerable(1, 1, 2, 3, 5, 8);
+        Enumerable<Integer> enumerable = Enumerable.of(1, 1, 2, 3, 5, 8);
 
         assertTrue(enumerable.sizeIsExactly(6));
     }

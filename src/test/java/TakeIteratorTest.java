@@ -58,7 +58,7 @@ public class TakeIteratorTest {
         when(stringIterable.iterator()).thenReturn(stringIterator);
         when(stringIterator.hasNext()).thenReturn(true);
         when(stringIterator.next()).thenReturn("foobar");
-        Enumerable<String> strings = Enumerable.enumerable(stringIterable);
+        Enumerable<String> strings = Enumerable.of(stringIterable);
 
         strings.first();
 

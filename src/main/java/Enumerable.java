@@ -18,11 +18,11 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new EmptyIterator<>());
     }
 
-    public static <T> Enumerable<T> enumerable(Iterable<T> items) {
+    public static <T> Enumerable<T> of(Iterable<T> items) {
         return new Enumerable<>(() -> items.iterator());
     }
 
-    public static <T> Enumerable<T> enumerable(T... items) {
+    public static <T> Enumerable<T> of(T... items) {
         return new Enumerable<>(() -> new ArrayIterator<>(items));
     }
 

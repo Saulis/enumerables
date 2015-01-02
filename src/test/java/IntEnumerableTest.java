@@ -19,14 +19,14 @@ public class IntEnumerableTest {
     
     @Test
     public void positiveMinIsReturned() {
-        Enumerable<Integer> enumerable = Enumerable.enumerable(1, 2, 3);
+        Enumerable<Integer> enumerable = Enumerable.of(1, 2, 3);
 
         assertThat(IntEnumerable.min(enumerable).get(), is(1));
     }
 
     @Test
     public void negativeMinIsReturned() {
-        Enumerable<Integer> enumerable = Enumerable.enumerable(-1, -2, -3);
+        Enumerable<Integer> enumerable = Enumerable.of(-1, -2, -3);
 
         assertThat(IntEnumerable.min(enumerable).get(), is(-3));
     }
@@ -42,14 +42,14 @@ public class IntEnumerableTest {
 
     @Test
     public void positiveMaxIsReturned() {
-        Enumerable<Integer> enumerable = Enumerable.enumerable(1, 2, 3);
+        Enumerable<Integer> enumerable = Enumerable.of(1, 2, 3);
 
         assertThat(IntEnumerable.max(enumerable).get(), is(3));
     }
 
     @Test
     public void negativeMaxIsReturned() {
-        Enumerable<Integer> enumerable = Enumerable.enumerable(-1, -2, -3);
+        Enumerable<Integer> enumerable = Enumerable.of(-1, -2, -3);
 
         assertThat(IntEnumerable.max(enumerable).get(), is(-1));
     }

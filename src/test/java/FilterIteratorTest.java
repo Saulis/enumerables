@@ -9,7 +9,7 @@ public class FilterIteratorTest {
     @Test
     public void itemsAreFiltered() {
         Enumerable<String> enumerable =
-                Enumerable.enumerable("foo", "foobar", "bar");
+                Enumerable.of("foo", "foobar", "bar");
 
         Enumerable<String> filtered = enumerable.filter(x -> x.length() == 3);
 
@@ -18,7 +18,7 @@ public class FilterIteratorTest {
 
     @Test
     public void noMatchesAreFound() {
-        Enumerable<String> enumerable = Enumerable.enumerable("foo", "bah");
+        Enumerable<String> enumerable = Enumerable.of("foo", "bah");
 
         Enumerable<String> bar = enumerable.filter(x -> x.equals("bar"));
 

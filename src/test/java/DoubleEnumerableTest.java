@@ -19,14 +19,14 @@ public class DoubleEnumerableTest {
     
     @Test
     public void positiveMinIsReturned() {
-        Enumerable<Double> enumerable = Enumerable.enumerable(1.0, 2.0, 3.0);
+        Enumerable<Double> enumerable = Enumerable.of(1.0, 2.0, 3.0);
 
         assertThat(DoubleEnumerable.min(enumerable).get(), is(1.0));
     }
 
     @Test
     public void negativeMinIsReturned() {
-        Enumerable<Double> enumerable = Enumerable.enumerable(-1.0, -2.0, -3.0);
+        Enumerable<Double> enumerable = Enumerable.of(-1.0, -2.0, -3.0);
 
         assertThat(DoubleEnumerable.min(enumerable).get(), is(-3.0));
     }
@@ -42,14 +42,14 @@ public class DoubleEnumerableTest {
 
     @Test
     public void positiveMaxIsReturned() {
-        Enumerable<Double> enumerable = Enumerable.enumerable(1.0, 2.0, 3.0);
+        Enumerable<Double> enumerable = Enumerable.of(1.0, 2.0, 3.0);
 
         assertThat(DoubleEnumerable.max(enumerable).get(), is(3.0));
     }
 
     @Test
     public void negativeMaxIsReturned() {
-        Enumerable<Double> enumerable = Enumerable.enumerable(-1.0, -2.0, -3.0);
+        Enumerable<Double> enumerable = Enumerable.of(-1.0, -2.0, -3.0);
 
         assertThat(DoubleEnumerable.max(enumerable).get(), is(-1.0));
     }

@@ -18,8 +18,8 @@ public class JoinIteratorTest {
 
     @Test
     public void multipleCollectionsAreJoined() {
-        Enumerable<String> foo = Enumerable.enumerable("foo");
-        Enumerable<String> bar = Enumerable.enumerable("bar");
+        Enumerable<String> foo = Enumerable.of("foo");
+        Enumerable<String> bar = Enumerable.of("bar");
         List<String> ints = Enumerable.range(1, 3).map(x -> x.toString()).toList();
 
         Enumerable<String> joined = foo.join("nice").join(bar).join(ints);

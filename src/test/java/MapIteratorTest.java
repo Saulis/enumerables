@@ -6,7 +6,7 @@ import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 public class MapIteratorTest {
     @Test
     public void itemsAreMapped() {
-        Enumerable<String> enumerable = Enumerable.enumerable("foo", "bar");
+        Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
         Enumerable<String> mapped = enumerable.map(x -> x + "bar");
 
