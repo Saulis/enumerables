@@ -2,6 +2,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,7 +19,7 @@ public class EnumerableTest {
     public void emptyEnumerableIsConstructed() {
         Enumerable<Integer> empty = Enumerable.empty();
 
-        assertThat(empty.toList().size(), is(0));
+        assertTrue(empty.sizeIsExactly(0));
     }
 
     @Test
@@ -63,14 +66,14 @@ public class EnumerableTest {
     public void enumerableIsConstructedFromArray() {
         Enumerable<String> enumerable = Enumerable.of(stringArray);
 
-        assertThat(enumerable.toList(), contains("foo", "bar"));
+        assertThat(enumerable, contains("foo", "bar"));
     }
 
     @Test
     public void enumerableIsConstructedFromArguments() {
         Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
-        assertThat(enumerable.toList(), contains("foo", "bar"));
+        assertThat(enumerable, contains("foo", "bar"));
     }
 
     @Test
@@ -78,7 +81,7 @@ public class EnumerableTest {
         Enumerable<String> enumerable =
                 Enumerable.of(Arrays.asList(stringArray));
 
-        assertThat(enumerable.toList(), contains("foo", "bar"));
+        assertThat(enumerable, contains("foo", "bar"));
     }
 
     @Test
@@ -96,5 +99,15 @@ public class EnumerableTest {
 
         assertTrue(enumerable.sizeIsExactly(6));
     }
+
+    @Test
+    public void enumerableIsCollected() {
+        Enumerable<Integer> enumerable = Enumerable.of(1, 1, 2, 3, 5, 8);
+
+        Set<Integer> set = enumerable.collect(Collectors.toSet());
+
+        assertThat(set, contains(1,2,3,5,8));
+    }
+
 
 }

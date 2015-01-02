@@ -3,6 +3,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.assertTrue;
 
 public class FilterIteratorTest {
 
@@ -22,7 +23,7 @@ public class FilterIteratorTest {
 
         Enumerable<String> bar = enumerable.filter(x -> x.equals("bar"));
 
-        assertThat(bar.toList().size(), is(0));
+        assertTrue(bar.sizeIsExactly(0));
     }
 
     @Test
@@ -31,7 +32,7 @@ public class FilterIteratorTest {
 
         Enumerable<Object> filtered = empty.filter(x -> true);
 
-        assertThat(filtered.toList().size(), is(0));
+        assertTrue(filtered.sizeIsExactly(0));
     }
 
 

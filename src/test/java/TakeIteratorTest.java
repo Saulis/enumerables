@@ -40,7 +40,7 @@ public class TakeIteratorTest {
 
         Enumerable<Integer> take = integers.take(5);
 
-        assertThat(take.toList().size(), is(5));
+        assertTrue(take.sizeIsExactly(5));
         assertThat(take, contains(1, 2, 3, 4, 5));
     }
 
@@ -72,7 +72,7 @@ public class TakeIteratorTest {
 
         Enumerable<Integer> take = integers.take(5);
 
-        assertThat(take.toList().size(), is(3));
+        assertTrue(take.sizeIsExactly(3));
         assertThat(take, contains(1,2,3));
     }
 
@@ -82,6 +82,6 @@ public class TakeIteratorTest {
 
         Enumerable<Integer> take = empty.take(3);
 
-        assertThat(take.toList().size(), is(0));
+        assertTrue(take.isEmpty());
     }
 }

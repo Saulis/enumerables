@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -20,7 +21,9 @@ public class JoinIteratorTest {
     public void multipleCollectionsAreJoined() {
         Enumerable<String> foo = Enumerable.of("foo");
         Enumerable<String> bar = Enumerable.of("bar");
-        List<String> ints = Enumerable.range(1, 3).map(x -> x.toString()).toList();
+        List<String> ints = Enumerable.range(1, 3)
+                                      .map(x -> x.toString())
+                                      .collect(Collectors.toList());
 
         Enumerable<String> joined = foo.join("nice").join(bar).join(ints);
 

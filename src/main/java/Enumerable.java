@@ -2,10 +2,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
+import java.util.stream.Collector;
 
 public class Enumerable<T> implements Iterable<T> {
     private final Supplier<Iterator<T>> iteratorSupplier;
@@ -67,15 +65,6 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new JoinIterator(this.iterator(), items.iterator()));
     }
 
-
-    public List<T> toList() {
-        ArrayList<T> items = new ArrayList<>();
-
-        forEach(x -> items.add(x));
-
-        return items;
-    }
-
     public Optional<T> first() {
         Iterator<T> iterator = iterator();
 
@@ -95,5 +84,20 @@ public class Enumerable<T> implements Iterable<T> {
         Integer count = take(n + 1).flatMap((acc, x) -> acc + 1, 0);
 
         return count == n;
+    }
+
+    public boolean isEmpty() {
+        return sizeIsExactly(0);
+    }
+
+    public <R, A> R collect(Collector<T, A, R> collector) {
+        Supplier<A> supplier = collector.supplier();
+        BiConsumer<A, T> accumulator = collector.accumulator();
+        Function<A, R> finisher = collector.finisher();
+
+        A container = supplier.get();
+        forEach(x -> accumulator.accept(container, x));
+
+        return finisher.apply(container);
     }
 }
