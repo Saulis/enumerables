@@ -81,16 +81,6 @@ public class EnumerableTest {
     }
 
     @Test
-    public void itemsAreFiltered() {
-        Enumerable<String> enumerable =
-                Enumerable.enumerable("foo", "foobar", "bar");
-
-        Enumerable<String> filtered = enumerable.filter(x -> x.length() == 3);
-
-        assertThat(filtered, contains("foo", "bar"));
-    }
-
-    @Test
     public void itemsAreFlattened() {
         Enumerable<String> enumerable = Enumerable.enumerable("foo", "bar");
 

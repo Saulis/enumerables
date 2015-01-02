@@ -58,15 +58,7 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public Enumerable<T> filter(Predicate<T> predicate) {
-        ArrayList<T> filteredItems = new ArrayList<>();
-
-        forEach(x -> {
-            if(predicate.test(x)) {
-                filteredItems.add(x);
-            }
-        });
-
-        return Enumerable.enumerable(filteredItems);
+        return new Enumerable<>(() -> new FilterIterator<>(this, predicate));
     }
 
     public List<T> toList() {
