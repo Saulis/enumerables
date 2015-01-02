@@ -90,4 +90,10 @@ public class Enumerable<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return iteratorSupplier.get();
     }
+
+    public boolean sizeIsExactly(long n) {
+        Integer count = take(n + 1).flatMap((acc, x) -> acc + 1, 0);
+
+        return count == n;
+    }
 }

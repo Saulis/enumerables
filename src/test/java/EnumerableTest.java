@@ -6,6 +6,7 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.assertTrue;
 
 public class EnumerableTest {
 
@@ -87,6 +88,13 @@ public class EnumerableTest {
         String aggregate = enumerable.flatMap((acc, x) -> acc + x, "");
 
         assertThat(aggregate, is("foobar"));
+    }
+
+    @Test
+    public void sizeIsExactly() {
+        Enumerable<Integer> enumerable = Enumerable.enumerable(1, 1, 2, 3, 5, 8);
+
+        assertTrue(enumerable.sizeIsExactly(6));
     }
 
 }
