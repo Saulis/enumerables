@@ -23,7 +23,7 @@ range.limit(5);
 
 //->java.lang.IllegalStateException: stream has already been operated upon or closed
 ```
-Now, of course the proper way in this case would be to either create another stream to call the .limit(5) on, or use a collector to create a list from the range first and then get first item of the list and then take the first 5 items.
+Now, of course the one way to overcome the exception in this case would be to either create another stream to call the limit(5) on, or use a collector to create a list from the range first and then get first item of the list and then take the first 5 items.
 ```
 //Like so
 IntStream range = IntStream.range(1, 10);
@@ -43,7 +43,7 @@ Stream.of(list.subList(0, 4));
 For me, neither of these options really feel intuitive. And there are probably two or three more ways to do the same thing which I'm just not aware of.
 Basically all I ever wanted was to get the first item of the collection and get the first 5 items after that.
 
-What if the Stream would just allow re-iteration? Some of the performance would be lost, for sure - but I could control the balance between code readability and performance:
+What if the Stream would just allow re-iteration? Some of the performance would be lost, for sure - but I would be able to control the balance between code readability and performance:
 ```
 Enumerable<Integer> range = Enumerable.range(1, 10);
 Optional<Integer> first = range.first();
@@ -58,4 +58,4 @@ Set<Integer> set = range.collect(Collectors.toSet());
 range.map(x -> x.toString())
      .forEach(System.out::println);
 ```
-Being re-iterable and mutable Enumerable collections are also safe to pass around as arguments and return values so there's not as much mapping between collection types as there is when using Stream.
+Being re-iterable and mutable, Enumerable collections are also safe to pass around as arguments and return values so there's not as much mapping between collection types as there is when using Stream.
