@@ -15,7 +15,7 @@ public class EnumerableTest {
     public void emptyEnumerableIsConstructed() {
         Enumerable<Integer> empty = Enumerable.empty();
 
-        assertThat(empty.count(), is(0));
+        assertThat(empty.toList().size(), is(0));
     }
 
     @Test

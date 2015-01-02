@@ -8,12 +8,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class Enumerable<T> implements Iterable<T> {
-    private  ArrayList<T> items;
     private final Supplier<Iterator<T>> iteratorSupplier;
 
     public Enumerable(Supplier<Iterator<T>> iteratorSupplier) {
         this.iteratorSupplier = iteratorSupplier;
-        items = null;
     }
 
     public static <T> Enumerable<T> empty() {
@@ -62,7 +60,11 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public List<T> toList() {
-        return getItems();
+        ArrayList<T> items = new ArrayList<>();
+
+        forEach(x -> items.add(x));
+
+        return items;
     }
 
     public Optional<T> first() {
@@ -73,26 +75,6 @@ public class Enumerable<T> implements Iterable<T> {
         }
 
         return Optional.empty();
-    }
-
-    public int count() {
-        return getItems().size();
-    }
-
-    private ArrayList<T> getItems() {
-        if(items == null) {
-            items = iterateItems();
-        }
-
-        return items;
-    }
-
-    private ArrayList<T> iterateItems() {
-        ArrayList<T> items = new ArrayList<>();
-
-        forEach(x -> items.add(x));
-
-        return items;
     }
 
     @Override
