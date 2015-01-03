@@ -1,7 +1,8 @@
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Enumerable<T> implements Iterable<T> {
     private final Supplier<Iterator<T>> iteratorSupplier;
@@ -98,4 +99,21 @@ public class Enumerable<T> implements Iterable<T> {
 
         return finisher.apply(container);
     }
+
+    public Enumerable<T> sort(Comparator<T> comparator) {
+        return new Enumerable<>(() -> new SortIterator<>(iterator(), comparator));
+    }
+
+    public <R extends Comparable<R>> Enumerable<T> sort(Function<T, R> function) {
+        return sort(Comparator.comparing(function));
+    }
+
+    public Enumerable<T> sortReversed(Comparator<T> comparator) {
+        return sort(comparator.reversed());
+    }
+
+    public <R extends Comparable<R>> Enumerable<T> sortReversed(Function<T, R> function) {
+        return sortReversed(Comparator.comparing(function));
+    }
+
 }
