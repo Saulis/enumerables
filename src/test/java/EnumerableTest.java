@@ -2,7 +2,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,7 +87,7 @@ public class EnumerableTest {
     public void itemsAreFlattened() {
         Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
-        String aggregate = enumerable.flatMap((acc, x) -> acc + x, "");
+        String aggregate = enumerable.reduce((acc, x) -> acc + x, "");
 
         assertThat(aggregate, is("foobar"));
     }

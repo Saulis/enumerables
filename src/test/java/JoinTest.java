@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-public class JoinIteratorTest {
+public class JoinTest {
 
     @Test
     public void emptyIsJoinedByIntegers() {

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
-public class TakeIteratorTest {
+public class TakeTest {
 
     @Inject
     Iterable<String> stringIterable;
@@ -73,7 +73,7 @@ public class TakeIteratorTest {
         Enumerable<Integer> take = integers.take(5);
 
         assertTrue(take.sizeIsExactly(3));
-        assertThat(take, contains(1,2,3));
+        assertThat(take, contains(1, 2, 3));
     }
 
     @Test

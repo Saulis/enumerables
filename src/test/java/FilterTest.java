@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertTrue;
 
-public class FilterIteratorTest {
+public class FilterTest {
 
     @Test
     public void itemsAreFiltered() {

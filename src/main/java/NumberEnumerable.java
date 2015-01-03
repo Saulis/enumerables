@@ -11,7 +11,7 @@ class NumberEnumerable {
             return Optional.empty();
         }
 
-        return Optional.of(enumerable.flatMap(aggregateFunction, first.get()));
+        return Optional.of(enumerable.reduce(aggregateFunction, first.get()));
     }
 
 }

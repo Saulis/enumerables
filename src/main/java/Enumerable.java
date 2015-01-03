@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -32,7 +30,7 @@ public class Enumerable<T> implements Iterable<T> {
         }
     }
 
-    public <R> R flatMap(BiFunction<R, T, R> function, R seed) {
+    public <R> R reduce(BiFunction<R, T, R> function, R seed) {
         R result = seed;
 
         Iterator<T> iterator = iterator();
@@ -81,7 +79,7 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public boolean sizeIsExactly(long n) {
-        Integer count = take(n + 1).flatMap((acc, x) -> acc + 1, 0);
+        Integer count = take(n + 1).reduce((acc, x) -> acc + 1, 0);
 
         return count == n;
     }
