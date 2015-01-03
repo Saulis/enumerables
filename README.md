@@ -59,3 +59,19 @@ range.map(x -> x.toString())
      .forEach(System.out::println);
 ```
 Being re-iterable and mutable, Enumerable collections are also safe to pass around as arguments and return values so there's not as much mapping between collection types as there is when using Stream.
+
+#Usage
+Map
+```
+//Enumerables
+Enumerable.of("foo", "bar")
+          .map(x -> x + "bar");
+
+//Stream
+Stream.of("foo", "bar")
+      .map(x -> x + "bar");
+
+//IEnumerable in C#
+var array = new [] { "foo", "bar"};
+array.Select(x => x + "bar");
+```
