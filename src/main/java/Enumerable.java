@@ -1,3 +1,4 @@
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -122,4 +123,11 @@ public class Enumerable<T> implements Iterable<T> {
         return sortReversed(function).first();
     }
 
+    public Optional<Integer> sum(Function<T, Integer> function) {
+        if(isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(reduce(0, (acc, x) -> acc + function.apply(x)));
+    }
 }
