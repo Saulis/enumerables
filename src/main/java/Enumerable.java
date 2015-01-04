@@ -130,4 +130,17 @@ public class Enumerable<T> implements Iterable<T> {
 
         return Optional.of(reduce(0, (acc, x) -> acc + function.apply(x)));
     }
+
+    public Optional<Double> average(Function<T, Integer> function) {
+        if(isEmpty()) {
+            return Optional.empty();
+        }
+
+        AbstractMap.SimpleEntry<Double, Double> sumAndCount =
+            reduce(new AbstractMap.SimpleEntry<>(0.0, 0.0), (acc, x) ->
+                new AbstractMap.SimpleEntry<>(acc.getKey() + function.apply(x),
+                                              acc.getValue() + 1.0));
+
+        return Optional.of(sumAndCount.getKey() / sumAndCount.getValue());
+    }
 }
