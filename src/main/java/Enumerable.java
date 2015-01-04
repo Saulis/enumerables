@@ -1,4 +1,3 @@
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -24,9 +23,9 @@ public class Enumerable<T> implements Iterable<T> {
 
     public static Enumerable<Integer> range(int from, int to) {
         if(from <= to) {
-            return new Enumerable<>(() -> new RangeIterator<>(from - 1, x -> x + 1, to - from + 1));
+            return new Enumerable<>(() -> new FunctionIterator<>(from - 1, x -> x + 1, to - from + 1));
         } else {
-            return new Enumerable<>(() -> new RangeIterator<>(from + 1, x -> x - 1, from - to + 1));
+            return new Enumerable<>(() -> new FunctionIterator<>(from + 1, x -> x - 1, from - to + 1));
         }
     }
 

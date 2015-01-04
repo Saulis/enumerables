@@ -1,14 +1,14 @@
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class RangeIterator<T> implements Iterator<T> {
+public class FunctionIterator<T> implements Iterator<T> {
 
     private T seed;
     private final Function<T, T> function;
     private final int iterations;
     private int cursor;
 
-    public RangeIterator(T seed, Function<T, T> function, int iterations) {
+    public FunctionIterator(T seed, Function<T, T> function, int iterations) {
         cursor = 0;
         this.seed = seed;
         this.function = function;
