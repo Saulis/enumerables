@@ -8,7 +8,7 @@ public class ReduceTest {
     public void stringsAreReduced() {
         Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
-        String result = enumerable.reduce((acc, x) -> acc + x, "");
+        String result = enumerable.reduce("", (acc, x) -> acc + x);
 
         assertThat(result, is("foobar"));
     }

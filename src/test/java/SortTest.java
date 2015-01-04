@@ -1,5 +1,10 @@
 import org.junit.Test;
 
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
@@ -22,4 +27,23 @@ public class SortTest {
 
         assertThat(sorted, contains(3,2,1));
     }
+
+    @Test
+    public void minIsReturned() {
+        Enumerable<Integer> ints = Enumerable.of(2, 3, 1);
+
+        Optional<Integer> min = ints.min(x -> x);
+
+        assertThat(min.get(), is(1));
+    }
+
+    @Test
+    public void maxIsReturned() {
+        Enumerable<String> strings = Enumerable.of("foo", "br", "bar4");
+
+        Optional<String> max = strings.max(x -> x.length());
+
+        assertThat(max.get(), is("bar4"));
+    }
+
 }

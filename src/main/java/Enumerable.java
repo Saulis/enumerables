@@ -1,8 +1,6 @@
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Enumerable<T> implements Iterable<T> {
     private final Supplier<Iterator<T>> iteratorSupplier;
@@ -31,7 +29,7 @@ public class Enumerable<T> implements Iterable<T> {
         }
     }
 
-    public <R> R reduce(BiFunction<R, T, R> function, R seed) {
+    public <R> R reduce(R seed, BiFunction<R, T, R> function) {
         R result = seed;
 
         Iterator<T> iterator = iterator();
@@ -80,7 +78,7 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public boolean sizeIsExactly(long n) {
-        Integer count = take(n + 1).reduce((acc, x) -> acc + 1, 0);
+        Integer count = take(n + 1).reduce(0, (acc, x) -> acc + 1);
 
         return count == n;
     }
@@ -114,6 +112,14 @@ public class Enumerable<T> implements Iterable<T> {
 
     public <R extends Comparable<R>> Enumerable<T> sortReversed(Function<T, R> function) {
         return sortReversed(Comparator.comparing(function));
+    }
+
+    public <R extends Comparable<R>> Optional<T> min(Function<T, R> function) {
+        return sort(function).first();
+    }
+
+    public <R extends Comparable<R>> Optional<T> max(Function<T, R> function) {
+        return sortReversed(function).first();
     }
 
 }

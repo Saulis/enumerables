@@ -87,7 +87,7 @@ public class EnumerableTest {
     public void itemsAreFlattened() {
         Enumerable<String> enumerable = Enumerable.of("foo", "bar");
 
-        String aggregate = enumerable.reduce((acc, x) -> acc + x, "");
+        String aggregate = enumerable.reduce("", (acc, x) -> acc + x);
 
         assertThat(aggregate, is("foobar"));
     }
