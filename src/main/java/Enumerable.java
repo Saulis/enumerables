@@ -46,8 +46,8 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new MapIterator<>(this, func));
     }
 
-    public Enumerable<T> take(long n) {
-        return new Enumerable<>(() -> new TakeIterator(this, n));
+    public Enumerable<T> limit(long maxSize) {
+        return new Enumerable<>(() -> new LimitIterator(this, maxSize));
     }
 
     public Enumerable<T> filter(Predicate<T> predicate) {
@@ -62,7 +62,7 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new JoinIterator(this.iterator(), items.iterator()));
     }
 
-    public Optional<T> first() {
+    public Optional<T> findFirst() {
         Iterator<T> iterator = iterator();
 
         if(iterator.hasNext()) {
@@ -78,7 +78,7 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public boolean sizeIsExactly(long n) {
-        Integer count = take(n + 1).reduce(0, (acc, x) -> acc + 1);
+        Integer count = limit(n + 1).reduce(0, (acc, x) -> acc + 1);
 
         return count == n;
     }
@@ -106,20 +106,20 @@ public class Enumerable<T> implements Iterable<T> {
         return sort(Comparator.comparing(function));
     }
 
-    public Enumerable<T> sortReversed(Comparator<T> comparator) {
+    public Enumerable<T> sortDescending(Comparator<T> comparator) {
         return sort(comparator.reversed());
     }
 
-    public <R extends Comparable<R>> Enumerable<T> sortReversed(Function<T, R> function) {
-        return sortReversed(Comparator.comparing(function));
+    public <R extends Comparable<R>> Enumerable<T> sortDescending(Function<T, R> function) {
+        return sortDescending(Comparator.comparing(function));
     }
 
     public <R extends Comparable<R>> Optional<T> min(Function<T, R> function) {
-        return sort(function).first();
+        return sort(function).findFirst();
     }
 
     public <R extends Comparable<R>> Optional<T> max(Function<T, R> function) {
-        return sortReversed(function).first();
+        return sortDescending(function).findFirst();
     }
 
     public Optional<Integer> sum(Function<T, Integer> function) {

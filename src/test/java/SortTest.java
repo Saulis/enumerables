@@ -1,9 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Comparator;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,10 +19,10 @@ public class SortTest {
     }
 
     @Test
-    public void itemsAreSortedReversed() {
+    public void itemsAreSortedDescending() {
         Enumerable<Integer> ints = Enumerable.of(2, 3, 1);
 
-        Enumerable<Integer> sorted = ints.sortReversed(x -> x);
+        Enumerable<Integer> sorted = ints.sortDescending(x -> x);
 
         assertThat(sorted, contains(3,2,1));
     }

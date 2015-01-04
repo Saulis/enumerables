@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
-public class TakeTest {
+public class LimitTest {
 
     @Inject
     Iterable<String> stringIterable;
@@ -28,7 +28,7 @@ public class TakeTest {
     public void firstItemIsTaken() {
         Enumerable<Integer> integers = Enumerable.range(1, 10);
 
-        Optional<Integer> first = integers.first();
+        Optional<Integer> first = integers.findFirst();
 
         assertTrue(first.isPresent());
         assertThat(first.get(), is(1));
@@ -38,17 +38,17 @@ public class TakeTest {
     public void firstFiveItemsAreTaken() {
         Enumerable<Integer> integers = Enumerable.range(1, 10);
 
-        Enumerable<Integer> take = integers.take(5);
+        Enumerable<Integer> limited = integers.limit(5);
 
-        assertTrue(take.sizeIsExactly(5));
-        assertThat(take, contains(1, 2, 3, 4, 5));
+        assertTrue(limited.sizeIsExactly(5));
+        assertThat(limited, contains(1, 2, 3, 4, 5));
     }
 
     @Test
     public void emptyIsReturnedOnFirst() {
         Enumerable<Object> enumerable = Enumerable.empty();
 
-        Optional<Object> first = enumerable.first();
+        Optional<Object> first = enumerable.findFirst();
 
         assertFalse(first.isPresent());
     }
@@ -60,7 +60,7 @@ public class TakeTest {
         when(stringIterator.next()).thenReturn("foobar");
         Enumerable<String> strings = Enumerable.of(stringIterable);
 
-        strings.first();
+        strings.findFirst();
 
         verify(stringIterator, times(1)).hasNext();
         verify(stringIterator, times(1)).next();
@@ -70,18 +70,18 @@ public class TakeTest {
     public void itemsFromTooShortListAreTaken() {
         Enumerable<Integer> integers = Enumerable.range(1, 3);
 
-        Enumerable<Integer> take = integers.take(5);
+        Enumerable<Integer> limited = integers.limit(5);
 
-        assertTrue(take.sizeIsExactly(3));
-        assertThat(take, contains(1, 2, 3));
+        assertTrue(limited.sizeIsExactly(3));
+        assertThat(limited, contains(1, 2, 3));
     }
 
     @Test
     public void itemsFromEmptyListAreNotTaken() {
         Enumerable<Integer> empty = Enumerable.empty();
 
-        Enumerable<Integer> take = empty.take(3);
+        Enumerable<Integer> limited = empty.limit(3);
 
-        assertTrue(take.isEmpty());
+        assertTrue(limited.isEmpty());
     }
 }
