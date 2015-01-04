@@ -54,12 +54,12 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new FilterIterator<>(this, predicate));
     }
 
-    public Enumerable<T> join(T... items) {
-        return new Enumerable<>(() -> new JoinIterator(this.iterator(), new ArrayIterator<>(items)));
+    public Enumerable<T> concat(T... items) {
+        return new Enumerable<>(() -> new ConcatIterator(this.iterator(), new ArrayIterator<>(items)));
     }
 
-    public Enumerable<T> join(Iterable<T> items) {
-        return new Enumerable<>(() -> new JoinIterator(this.iterator(), items.iterator()));
+    public Enumerable<T> concat(Iterable<T> items) {
+        return new Enumerable<>(() -> new ConcatIterator(this.iterator(), items.iterator()));
     }
 
     public Optional<T> findFirst() {

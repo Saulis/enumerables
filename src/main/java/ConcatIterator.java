@@ -1,11 +1,11 @@
 import java.util.Iterator;
 
-public class JoinIterator<T> implements Iterator<T> {
+public class ConcatIterator<T> implements Iterator<T> {
 
     private int cursor;
     private Iterator<T>[] iterators;
 
-    public JoinIterator(Iterator<T>... iterators) {
+    public ConcatIterator(Iterator<T>... iterators) {
         this.iterators = iterators;
         this.cursor = 0;
     }
