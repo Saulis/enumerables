@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Comparator;
@@ -44,6 +45,20 @@ public class SortTest {
         Optional<String> max = strings.max(x -> x.length());
 
         assertThat(max.get(), is("bar4"));
+    }
+
+    @Test
+    public void negativeMaxIsReturned() {
+        Enumerable<Integer> enumerable = Enumerable.of(-1, -2, -3);
+
+        Assert.assertThat(enumerable.max(x -> x).get(), is(-1));
+    }
+
+    @Test
+    public void negativeMinIsReturned() {
+        Enumerable<Integer> enumerable = Enumerable.of(-1, -2, -3);
+
+        Assert.assertThat(enumerable.min(x -> x).get(), is(-3));
     }
 
 }
