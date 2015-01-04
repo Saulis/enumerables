@@ -2,16 +2,16 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertTrue;
 
-public class EnumerableTest {
-
+public class ConstructionTest {
     private final String[] stringArray = new String[] { "foo", "bar" };
 
     @Test
@@ -21,18 +21,19 @@ public class EnumerableTest {
         assertTrue(empty.sizeIsExactly(0));
     }
 
+    //This is a known side-effect because the original collection is not copied.
     @Test
-    public void enumerableIsUnchangedAfterConstruction() {
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("foo");
-        Enumerable<String> enumerable = Enumerable.of(strings);
+    public void enumerableChangesAfterConstruction() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("foo");
 
-        strings.add("bar");
+        Enumerable<String> strings = Enumerable.of(list);
+        assertTrue(strings.sizeIsExactly(1));
 
-        assertThat(enumerable, not(hasItem("bar")));
+        list.add("bar");
+        assertTrue(strings.sizeIsExactly(2));
     }
 
-    //TODO: move to IntEnumerable
     @Test
     public void ascendingRangeIsConstructed() {
         Enumerable<Integer> range = Enumerable.range(1, 5);
@@ -48,10 +49,10 @@ public class EnumerableTest {
     }
 
     @Test
-    public void emptyRangeIsConstructed() {
-        Enumerable<Integer> range = Enumerable.range(1, 0);
+    public void invertedRangeIsConstructed() {
+        Enumerable<Integer> range = Enumerable.range(2, -2);
 
-        assertThat(range, contains(1, 0)); //NOT!
+        assertThat(range, contains(2,1,0,-1,-2));
     }
 
     @Test
@@ -82,31 +83,4 @@ public class EnumerableTest {
 
         assertThat(enumerable, contains("foo", "bar"));
     }
-
-    @Test
-    public void itemsAreFlattened() {
-        Enumerable<String> enumerable = Enumerable.of("foo", "bar");
-
-        String aggregate = enumerable.reduce("", (acc, x) -> acc + x);
-
-        assertThat(aggregate, is("foobar"));
-    }
-
-    @Test
-    public void sizeIsExactly() {
-        Enumerable<Integer> enumerable = Enumerable.of(1, 1, 2, 3, 5, 8);
-
-        assertTrue(enumerable.sizeIsExactly(6));
-    }
-
-    @Test
-    public void enumerableIsCollected() {
-        Enumerable<Integer> enumerable = Enumerable.of(1, 1, 2, 3, 5, 8);
-
-        Set<Integer> set = enumerable.collect(Collectors.toSet());
-
-        assertThat(set, contains(1,2,3,5,8));
-    }
-
-
 }
