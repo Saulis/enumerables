@@ -142,4 +142,10 @@ public class Enumerable<T> implements Iterable<T> {
 
         return Optional.of(sumAndCount.getKey() / sumAndCount.getValue());
     }
+
+    public Enumerable<T> copy() {
+        LinkedList<T> list = new LinkedList<>();
+
+        return new Enumerable<>(() -> new CopyIterator(iterator(), list));
+    }
 }
