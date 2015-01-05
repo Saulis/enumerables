@@ -51,6 +51,10 @@ public class Enumerable<T> implements Iterable<T> {
         return result;
     }
 
+    public static <T> Enumerable<T> repeat(Supplier<T> supplier, int iterations) {
+        return new Enumerable<>(() -> new RepeatIterator<>(supplier, iterations));
+    }
+
     public <R> Enumerable<R> map(Function<T, R> func) {
         return new Enumerable<>(() -> new MapIterator<>(this, func));
     }

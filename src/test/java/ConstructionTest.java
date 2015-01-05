@@ -84,4 +84,11 @@ public class ConstructionTest {
 
         assertThat(enumerable, contains("foo", "bar"));
     }
+
+    @Test
+    public void repeatingEnumerableIsConstructed() {
+        Enumerable<Integer> ints = Enumerable.repeat(() -> 1, 5);
+
+        assertThat(ints, contains(1,1,1,1,1));
+    }
 }
