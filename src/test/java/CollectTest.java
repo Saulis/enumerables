@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,5 +17,12 @@ public class CollectTest {
         assertThat(set, contains(1,2,3,5,8));
     }
 
+    @Test
+    public void listIsCollected() {
+        Enumerable<Integer> ints = Enumerable.of(1, 2, 3);
 
+        List<Integer> list = ints.toList();
+
+        assertThat(list, contains(1,2,3));
+    }
 }

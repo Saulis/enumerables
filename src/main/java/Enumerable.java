@@ -153,4 +153,8 @@ public class Enumerable<T> implements Iterable<T> {
 
         return new Enumerable<>(() -> new CopyIterator(iterator(), list));
     }
+
+    public List<T> toList() {
+        return collect(Collectors.toList());
+    }
 }
