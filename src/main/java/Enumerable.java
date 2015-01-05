@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Enumerable<T> implements Iterable<T> {
     private final Supplier<Iterator<T>> iteratorSupplier;
@@ -70,6 +71,10 @@ public class Enumerable<T> implements Iterable<T> {
         }
 
         return Optional.empty();
+    }
+
+    public <K> Map<K, List<T>> groupBy(Function<T, K> function) {
+        return collect(Collectors.groupingBy(function));
     }
 
     @Override
