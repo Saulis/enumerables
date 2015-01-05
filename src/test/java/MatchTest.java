@@ -26,7 +26,11 @@ public class MatchTest {
 
         assertFalse(strings.noneMatch(x -> x.equals("foo")));
         assertTrue(strings.noneMatch(x -> x.length() == 2));
+    }
 
+    @Test
+    public void itemIsContained() {
+        assertTrue(Enumerable.of("foo", "bar").contains("bar"));
     }
 
 }

@@ -62,6 +62,10 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new ConcatIterator(this.iterator(), items.iterator()));
     }
 
+    public boolean contains(T item) {
+        return anyMatch(x -> x.equals(item));
+    }
+
     public Enumerable<T> copy() {
         LinkedList<T> list = new LinkedList<>();
 
@@ -187,4 +191,5 @@ public class Enumerable<T> implements Iterable<T> {
     public List<T> toList() {
         return collect(Collectors.toList());
     }
+
 }
