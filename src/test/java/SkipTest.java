@@ -15,4 +15,9 @@ public class SkipTest {
     public void itemsAreSkipped() {
         assertThat(Enumerable.of(1,2,3).skip(2), contains(3));
     }
+
+    @Test
+    public void moreThanLengthItemsAreSkipped() {
+        assertTrue(Enumerable.empty().skip(1).isEmpty());
+    }
 }

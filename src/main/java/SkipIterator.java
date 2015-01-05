@@ -14,7 +14,7 @@ public class SkipIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        while(cursor++ < n) {
+        while(iterator.hasNext() && cursor++ < n) {
             iterator.next();
         }
 
