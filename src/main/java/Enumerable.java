@@ -172,6 +172,10 @@ public class Enumerable<T> implements Iterable<T> {
         return limit(n).count() < n;
     }
 
+    public Enumerable<T> skip(long n) {
+        return new Enumerable<>(() -> new SkipIterator<>(this, n));
+    }
+
     public Optional<Integer> sum(Function<T, Integer> function) {
         if(isEmpty()) {
             return Optional.empty();
