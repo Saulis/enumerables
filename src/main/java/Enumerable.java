@@ -30,6 +30,10 @@ public class Enumerable<T> implements Iterable<T> {
         }
     }
 
+    public boolean anyMatch(Predicate<T> predicate) {
+        return false;
+    }
+
     public <R> R reduce(R seed, BiFunction<R, T, R> function) {
         R result = seed;
 
@@ -63,6 +67,10 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new ConcatIterator(this.iterator(), items.iterator()));
     }
 
+    public int count() {
+        return reduce(0, (acc, x) -> acc + 1);
+    }
+
     public Optional<T> findFirst() {
         Iterator<T> iterator = iterator();
 
@@ -83,9 +91,15 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public boolean sizeIsExactly(long n) {
-        Integer count = limit(n + 1).reduce(0, (acc, x) -> acc + 1);
+        return limit(n + 1).count() == n;
+    }
 
-        return count == n;
+    public boolean sizeIsGreaterThan(long n) {
+        return limit(n + 1).count() == n + 1;
+    }
+
+    public boolean sizeIsLessThan(long n) {
+        return limit(n).count() < n;
     }
 
     public boolean isEmpty() {
