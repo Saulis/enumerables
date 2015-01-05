@@ -103,28 +103,28 @@ public class Enumerable<T> implements Iterable<T> {
         return finisher.apply(container);
     }
 
-    public Enumerable<T> sort(Comparator<T> comparator) {
-        return new Enumerable<>(() -> new SortIterator<>(iterator(), comparator));
+    public Enumerable<T> orderBy(Comparator<T> comparator) {
+        return new Enumerable<>(() -> new OrderIterator<>(iterator(), comparator));
     }
 
-    public <R extends Comparable<R>> Enumerable<T> sort(Function<T, R> function) {
-        return sort(Comparator.comparing(function));
+    public <R extends Comparable<R>> Enumerable<T> orderBy(Function<T, R> function) {
+        return orderBy(Comparator.comparing(function));
     }
 
-    public Enumerable<T> sortDescending(Comparator<T> comparator) {
-        return sort(comparator.reversed());
+    public Enumerable<T> orderByDescending(Comparator<T> comparator) {
+        return orderBy(comparator.reversed());
     }
 
-    public <R extends Comparable<R>> Enumerable<T> sortDescending(Function<T, R> function) {
-        return sortDescending(Comparator.comparing(function));
+    public <R extends Comparable<R>> Enumerable<T> orderByDescending(Function<T, R> function) {
+        return orderByDescending(Comparator.comparing(function));
     }
 
     public <R extends Comparable<R>> Optional<T> min(Function<T, R> function) {
-        return sort(function).findFirst();
+        return orderBy(function).findFirst();
     }
 
     public <R extends Comparable<R>> Optional<T> max(Function<T, R> function) {
-        return sortDescending(function).findFirst();
+        return orderByDescending(function).findFirst();
     }
 
     public Optional<Integer> sum(Function<T, Integer> function) {
