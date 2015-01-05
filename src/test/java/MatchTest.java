@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -32,5 +34,4 @@ public class MatchTest {
     public void itemIsContained() {
         assertTrue(Enumerable.of("foo", "bar").contains("bar"));
     }
-
 }

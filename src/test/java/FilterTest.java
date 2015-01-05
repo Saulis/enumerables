@@ -1,3 +1,4 @@
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -35,5 +36,8 @@ public class FilterTest {
         assertTrue(filtered.sizeIsExactly(0));
     }
 
-
+    @Test
+    public void itemsAreFilteredByType() {
+        assertThat(Enumerable.of("foo", 1).filterType(Integer.class), contains(1));
+    }
 }

@@ -123,6 +123,14 @@ public class Enumerable<T> implements Iterable<T> {
         return filter(predicate).isEmpty();
     }
 
+    public <R> Enumerable<R> cast(Class<R> c) {
+        return map(x -> (R)x);
+    }
+
+    public <R> Enumerable<R> filterType(Class<R> c) {
+        return filter(x -> x.getClass().equals(c)).cast(c);
+    }
+
     public Enumerable<T> orderBy(Comparator<T> comparator) {
         return new Enumerable<>(() -> new OrderIterator<>(iterator(), comparator));
     }
