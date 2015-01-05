@@ -30,8 +30,12 @@ public class Enumerable<T> implements Iterable<T> {
         }
     }
 
+    public boolean allMatch(Predicate<T> predicate) {
+        return filter(predicate.negate()).isEmpty();
+    }
+
     public boolean anyMatch(Predicate<T> predicate) {
-        return false;
+        return !filter(predicate).isEmpty();
     }
 
     public <R> R reduce(R seed, BiFunction<R, T, R> function) {
@@ -49,6 +53,10 @@ public class Enumerable<T> implements Iterable<T> {
 
     public <R> Enumerable<R> map(Function<T, R> func) {
         return new Enumerable<>(() -> new MapIterator<>(this, func));
+    }
+
+    public boolean noneMatch(Predicate<T> predicate) {
+        return filter(predicate).isEmpty();
     }
 
     public Enumerable<T> limit(long maxSize) {
