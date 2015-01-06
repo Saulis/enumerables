@@ -91,6 +91,10 @@ public class Enumerable<T> implements Iterable<T> {
         return Optional.empty();
     }
 
+    public Optional<T> findLast() {
+        return reverse().findFirst();
+    }
+
     public <R> Enumerable<R> flatMap(Function<T, R[]> function) {
         Iterator<ArrayIterator<R>> iterator =
                 map(x -> new ArrayIterator<>(function.apply(x))).iterator();

@@ -87,7 +87,12 @@ public class LimitTest {
 
     @Test
     public void negativeLimitReturnsEmpty() {
-        assertTrue(Enumerable.of(1,2,3).limit(-1).isEmpty());
+        assertTrue(Enumerable.of(1, 2, 3).limit(-1).isEmpty());
+    }
+
+    @Test
+    public void lastItemIsTaken() {
+        assertThat(Enumerable.of(1,2,3).findLast().get(), is(3));
     }
 
 }
