@@ -49,14 +49,20 @@ public class OrderTest {
     public void negativeMaxIsReturned() {
         Enumerable<Integer> enumerable = Enumerable.of(-1, -2, -3);
 
-        Assert.assertThat(enumerable.max(x -> x).get(), is(-1));
+        assertThat(enumerable.max(x -> x).get(), is(-1));
     }
 
     @Test
     public void negativeMinIsReturned() {
         Enumerable<Integer> enumerable = Enumerable.of(-1, -2, -3);
 
-        Assert.assertThat(enumerable.min(x -> x).get(), is(-3));
+        assertThat(enumerable.min(x -> x).get(), is(-3));
     }
+
+    @Test
+    public void enumerableIsReversed() {
+        assertThat(Enumerable.of(1,2,3).reverse(), contains(3,2,1));
+    }
+
 
 }

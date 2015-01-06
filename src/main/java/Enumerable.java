@@ -173,6 +173,13 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new RepeatIterator<>(supplier, iterations));
     }
 
+    public Enumerable<T> reverse() {
+        LinkedList<T> list = new LinkedList<>();
+        forEach(x -> list.add(0, x));
+
+        return new Enumerable<>(() -> list.iterator());
+    }
+
     public boolean sizeIsExactly(long n) {
         return limit(n + 1).count() == n;
     }
@@ -200,5 +207,4 @@ public class Enumerable<T> implements Iterable<T> {
     public List<T> toList() {
         return collect(Collectors.toList());
     }
-
 }
