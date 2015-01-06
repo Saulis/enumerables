@@ -1,4 +1,3 @@
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -61,7 +60,7 @@ public class OrderTest {
 
     @Test
     public void enumerableIsReversed() {
-        assertThat(Enumerable.of(1,2,3).reverse(), contains(3,2,1));
+        assertThat(Enumerable.of(1, 2, 3).reverse(), contains(3, 2, 1));
     }
 
 

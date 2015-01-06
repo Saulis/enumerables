@@ -91,6 +91,13 @@ public class Enumerable<T> implements Iterable<T> {
         return Optional.empty();
     }
 
+    public <R> Enumerable<R> flatMap(Function<T, R[]> function) {
+        Iterator<ArrayIterator<R>> iterator =
+                map(x -> new ArrayIterator<>(function.apply(x))).iterator();
+
+        return new Enumerable<>(() -> new ConcatIterator<>(iterator));
+    }
+
     public <K> Map<K, List<T>> groupBy(Function<T, K> function) {
         return collect(Collectors.groupingBy(function));
     }

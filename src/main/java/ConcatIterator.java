@@ -2,29 +2,30 @@ import java.util.Iterator;
 
 public class ConcatIterator<T> implements Iterator<T> {
 
-    private int cursor;
-    private Iterator<T>[] iterators;
+    private Iterator<T> currentIterator;
+    private Iterator<? extends Iterator<T>> iterators;
+
+    public ConcatIterator(Iterator<? extends Iterator<T>> iterators) {
+        this.iterators = iterators;
+        this.currentIterator = null;
+    }
 
     public ConcatIterator(Iterator<T>... iterators) {
-        this.iterators = iterators;
-        this.cursor = 0;
+        this(new ArrayIterator<>(iterators));
     }
 
     @Override
     public boolean hasNext() {
-        if(cursor < iterators.length) {
-            if(iterators[cursor].hasNext()) {
-                return true;
-            } else if(cursor < iterators.length - 1) {
-                return iterators[++cursor].hasNext();
-            }
+        while((currentIterator == null || !currentIterator.hasNext())
+                && iterators.hasNext()) {
+            currentIterator = iterators.next();
         }
 
-        return false;
+        return currentIterator.hasNext();
     }
 
     @Override
     public T next() {
-        return iterators[cursor].next();
+        return currentIterator.next();
     }
 }
