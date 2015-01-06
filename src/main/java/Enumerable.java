@@ -68,8 +68,9 @@ public class Enumerable<T> implements Iterable<T> {
 
     public Enumerable<T> copy() {
         LinkedList<T> list = new LinkedList<>();
+        forEach(x -> list.add(x));
 
-        return new Enumerable<>(() -> new CopyIterator(iterator(), list));
+        return new Enumerable<>(() -> list.iterator());
     }
 
     public int count() {
