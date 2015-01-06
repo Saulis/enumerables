@@ -95,6 +95,15 @@ public class Enumerable<T> implements Iterable<T> {
         return reverse().findFirst();
     }
 
+    public Optional<T> findSingle() {
+        if(sizeIsGreaterThan(1)) {
+            throw new NoSuchElementException(
+                    "Collection contains more than one element.");
+        }
+
+        return findFirst();
+    }
+
     public <R> Enumerable<R> flatMap(Function<T, R[]> function) {
         Iterator<ArrayIterator<R>> iterator =
                 map(x -> new ArrayIterator<>(function.apply(x))).iterator();
