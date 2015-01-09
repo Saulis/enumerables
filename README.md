@@ -15,82 +15,186 @@ Enumerable.of("foo", "bar")
 Looks like [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) right? Enumerables actually is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's Stream where possible.
 
 ##Why?
-Well, the inspiration came from small things like these:
+###tl;dr
+- Stream vs. Enumerable
+- use once vs. implicitly re-iterable
+- performance optimized vs. developer balanced between readbility/performance
+- type changes array->stream->list vs. iterable type that can be safely passed as a method argument and used throughout the system
+
+
+Streams in Java 8 are built for performance and the inability to re-iterate a collection can save you from for example accidentally querying a database multiple times on runtime. And that's a good thing.
+
+However, it's not uncommon that you have situation where you just have to re-iterate a collection multiple times.
 ```
-IntStream range = IntStream.range(1, 10);
-OptionalInt first = range.findFirst();
-range.limit(5);
+Stream<Integer> ints = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+Stream<Integer> evens = ints.filter(x -> x % 2 == 0);
+Stream<Integer> odds = ints.filter(x -> x % 2 != 0); <-- IllegalStateException
 
-//->java.lang.IllegalStateException: stream has already been operated upon or closed
 ```
-Now, of course the one way to overcome the exception in this case would be to either create another stream to call the limit(5) on, or use a collector to create a list from the range first and then get first item of the list and then take the first 5 items.
+Or you have a reasonably sized in-memory collection for which re-iteration isn't a performance issue at all.
 ```
-//Like so
-IntStream range = IntStream.range(1, 10);
-OptionalInt first = range.findFirst();
+// So, we need to create a new stream every time we need to re-iterate.
+Stream<Integer> evens = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).filter(x -> x % 2 == 0);
 
-IntStream anotherRange = IntStream.range(1, 10);
-anotherRange.limit(5);
-
-// Or, alternatively
-IntStream range = IntStream.range(1, 10);
-//range needs to be mapped since IntStream doesn't support built-in Collectors
-List<Integer> list = range.mapToObj(x -> x)
-                             .collect(Collectors.toList());
-Integer first = list.get(0);
-Stream.of(list.subList(0, 4));
+Stream<Integer> odds = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).filter(x -> x % 2 != 0);
 ```
-For me, neither of these options really feel intuitive. And there are probably two or three more ways to do the same thing which I'm just not aware of.
-Basically all I ever wanted was to get the first item of the collection and get the first 5 items after that.
-
-What if the Stream would just allow re-iteration? Some of the performance would be lost, for sure - but I would be able to control the balance between code readability and performance:
+Or you have heavy mapping functions that you would like to run only once.
 ```
-Enumerable<Integer> range = Enumerable.range(1, 10);
-Optional<Integer> first = range.first();
-Enumerable<Integer> firstFive = range.take(5);
+// With Streams, you want to collect the mapped elements and then create new streams from the collection for further operations.
+List<Integer> mappedList = Stream.of(1, 2, 3).map(x -> timeConsumingStuff(x)).collect(Collectors.toList());
 
-//At this point, the Enumerable range hasn't actually iterated through at all yet.
-
-//Enumerables support Stream Collectors
-Set<Integer> set = range.collect(Collectors.toSet());
-
-//Still re-iterable after collection
-range.map(x -> x.toString())
-     .forEach(System.out::println);
+mappedList.stream().findFirst();
+mappedList.stream().findAny();
 ```
-Being re-iterable and mutable, Enumerable collections are also safe to pass around as arguments and return values so there's not as much mapping between collection types as there is when using Stream.
 
-#Usage
-Mapping:
+Now, don't get me wrong - I like that my programs perform well. But - I do believe that the developers should be given more control - in this case  control over balancing between performance and readability.
 ```
-//Enumerables
-Enumerable<String> strings =
-  Enumerable.of("foo", "bar")
-            .map(x -> x + "bar");
+Enumerable<Integer> ints = Enumerable.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+Enumerable<Integer> evens = ints.filter(x -> x % 2 == 0);
+// -> [2,4,6,8,10]
 
-//Stream
-Stream<String> strings =
-  Stream.of("foo", "bar")
-        .map(x -> x + "bar");
+Enumerable<Integer> odds = ints.filter(x -> x % 2 != 0);
+// -> [1,3,5,7,9]
 
-//IEnumerable in C#
-var array = new [] { "foo", "bar"};
-IEnumerable<string> strings =
-  array.Select(x => x + "bar");
+//Disclaimer: filter() runs lazily as most of the functions in Enumerables, so the collection won't be actually iterated at all before it's reduced, ordered or collected.
+
+// You can use copy() to store the elements after it's iterated for the first time.
+Enumerable<Integer> copy = Enumerable.of(1,2,3).map(x -> timeConsumingStuff(x)).copy();
+
+// time consuming mapping stuff takes place here.
+List<Integer> ints1 = copy.toList();
+
+// re-iteration happens using the copy.
+Optional<Integer> first = copy.findFirst();
 ```
-Reducing:
+Because Enumerable is re-iterable and mutable, Enumerable objects are safe to pass and use as method arguments. This is a distinct difference compared to Streams. Therefore there's no need to collect them into lists and then back to an Enumerable later - this improves the readability of the code.
+
+#Usage examples
+
+## Constructing
 ```
-//Enumerables
-String result =
-  Enumerable.of("foo", "bar")
-            .reduce("", (acc, x) -> acc + x);
+// From arbitrary number of elements
+Enumerable<Integer> ints = Enumerable.of(1, 2, 3);
 
-//Stream
-String result =
-  Stream.of("foo", "bar")
-        .reduce("", (acc, x) -> acc + x);
+// From array
+Enumerable<String> strings = Enumerable.of(new String[]{"a", "b", "c"});
 
-//IEnumerable in C#
-var array = new [] { "foo", "bar"};
-string result = array.Aggregate("", (acc, x) => acc + x);
+// From any Iterable
+Enumerable<Double> doubles = Enumerable.of(new ArrayList<Double>());
+
+// An empty enumerable
+Enumerable<String> empty = Enumerable.empty();
+
+// A range -> [1,2,3,4,5]
+Enumerable<Integer> range = Enumerable.range(1, 5);
+
+// A repeating collection -> [1,1,1,1,1]
+Enumerable<Integer> repeat = Enumerable.repeat(() -> 1, 5);
+
+```
+##Mapping
+```
+HashMap<String, Integer[]> hashMap = new HashMap<>();
+hashMap.put("foo", new Integer[]{1, 2});
+hashMap.put("bar", new Integer[]{3, 4, 5});
+
+Enumerable<String> keys = Enumerable.of(hashMap.keySet());
+
+// -> ["foo2", "bar3"]
+keys.map(x -> x + hashMap.get(x).length);
+
+// -> [1,2,3,4,5]
+keys.flatMap(x -> hashMap.get(x));
+
+```
+##Filtering
+```
+Enumerable.range(1, 10).filter(x -> x % 2 == 0);
+// -> [2,4,6,8,10]
+
+Enumerable.of(1, "foo", 2.0f, "bar").filterType(String.class);
+// -> ["foo", "bar"]
+
+Enumerable.range(1, 10).allMatch(x -> x > 0);
+// -> true
+
+Enumerable.range(1, 10).noneMatch(x -> x > 10);
+// -> true
+
+Enumerable.range(1, 10).anyMatch(x -> x == 5);
+// -> true
+
+Enumerable.range(1, 10).contains(11);
+// -> false
+```
+##Sorting
+```
+Enumerable.of("a", "foo3", "bar").orderBy(x -> x.length());
+// -> ["a", "bar", "foo3"]
+
+Enumerable.of("a", "foo3", "bar").orderByDescending(x -> x.length());
+// -> ["foo3", "bar", "a"]
+
+Enumerable.range(1,10).reverse();
+// -> [10,9,8,7,6,5,4,3,2,1]
+```
+##Reducing
+```
+Enumerable.of("foo", "bar").reduce("", (acc,x) -> acc + x);
+// -> "foobar"
+
+Enumerable.of(1,2,3).sum(x -> x);
+// -> 6
+
+Enumerable.of(1,2,3).average(x -> x);
+// -> 3
+
+Enumerable.of(1,2,3).min(x -> x);
+// -> 1
+
+Enumerable.of(1,2,3).max(x -> x);
+// -> 3
+
+Enumerable.of(1,2,3).count();
+// -> 3
+```
+##Selecting and Collecting
+```
+Enumerable.range(1, 10).limit(5);
+// -> [1,2,3,4,5]
+
+Enumerable.range(1, 10).skip(5);
+// -> [6,7,8,9,10]
+
+Enumerable.range(1, 10).findFirst();
+// -> 1
+
+Enumerable.range(1, 10).findLast();
+// -> 10
+
+Enumerable.range(1, 10).findSingle();
+// -> NoSuchElementException
+
+Enumerable.of(1).findSingle();
+// -> 1
+
+// Stream Collectors are also supported
+Enumerable.of(1,2,3).collect(Collectors.toSet());
+
+// Shortcut for collecting a list
+Enumerable.of(1,2,3).toList();
+```
+##Other functions
+```
+// concatenates with an Iterable<T> or an array
+Enumerable.of(1).concat(2,3);
+// -> [1,2,3]
+
+// sizeIs* functions can be used to determine sizes without iterating the collection through (like count() does)
+Enumerable.of(1,2,3).sizeIsExactly(3); //true
+Enumerable.of(1,2,3).sizeIsLessThan(1); // false
+Enumerable.of(1,2,3).sizeIsGreaterThan(1); //true
+
+// copy() can be used to store the collection on first iteration so that it's parent won't be iterated again.
+Enumerable<Integer> ints = Enumerable.of(1,2,3).copy();
 ```
