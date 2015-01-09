@@ -31,22 +31,27 @@ Stream<Integer> evens = ints.filter(x -> x % 2 == 0);
 Stream<Integer> odds = ints.filter(x -> x % 2 != 0); <-- IllegalStateException
 
 ```
-Or you have a reasonably sized in-memory collection for which re-iteration isn't a performance issue at all.
+Or you have a reasonably sized in-memory collection for which re-iteration
+isn't a performance issue at all.
 ```java
 // So, we need to create a new stream every time we need to re-iterate.
-Stream<Integer> evens = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).filter(x -> x % 2 == 0);
+Stream<Integer> evens = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+                              .filter(x -> x % 2 == 0);
 
-Stream<Integer> odds = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).filter(x -> x % 2 != 0);
+Stream<Integer> odds = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+                             .filter(x -> x % 2 != 0);
 ```
 Or you have heavy mapping functions that you would like to run only once.
-```
-// With Streams, you want to collect the mapped elements and then create new streams from the collection for further operations.
-List<Integer> mappedList = Stream.of(1, 2, 3).map(x -> timeConsumingStuff(x)).collect(Collectors.toList());
+```java
+// With Streams, you want to collect the mapped elements and then create
+// new streams from the collection for further operations.
+List<Integer> mappedList = Stream.of(1, 2, 3)
+                                 .map(x -> timeConsumingStuff(x))
+                                 .collect(Collectors.toList());
 
 mappedList.stream().findFirst();
 mappedList.stream().findAny();
 ```
-
 Now, don't get me wrong - I like that my programs perform well. But - I do believe that the developers should be given more control - in this case  control over balancing between performance and readability.
 ```java
 Enumerable<Integer> ints = Enumerable.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -56,9 +61,12 @@ Enumerable<Integer> evens = ints.filter(x -> x % 2 == 0);
 Enumerable<Integer> odds = ints.filter(x -> x % 2 != 0);
 // -> [1,3,5,7,9]
 
-//Disclaimer: filter() runs lazily as most of the functions in Enumerables, so the collection won't be actually iterated at all before it's reduced, ordered or collected.
+// Disclaimer: filter() runs lazily as most of the functions in Enumerables,
+// so the collection won't be actually iterated at all before it's reduced,
+// ordered or collected.
 
-// You can use copy() to store the elements after it's iterated for the first time.
+// You can use copy() to store the elements after it's iterated for the
+// first time.
 Enumerable<Integer> copy = Enumerable.of(1,2,3).map(x -> timeConsumingStuff(x)).copy();
 
 // time consuming mapping stuff takes place here.
@@ -190,12 +198,14 @@ Enumerable.of(1,2,3).toList();
 Enumerable.of(1).concat(2,3);
 // -> [1,2,3]
 
-// sizeIs* functions can be used to determine sizes without iterating the collection through (like count() does)
+// sizeIs* functions can be used to determine sizes without iterating
+// the collection through (like count() does)
 Enumerable.of(1,2,3).sizeIsExactly(3); //true
 Enumerable.of(1,2,3).sizeIsLessThan(1); // false
 Enumerable.of(1,2,3).sizeIsGreaterThan(1); //true
 
-// copy() can be used to store the collection on first iteration so that it's parent won't be iterated again.
+// copy() can be used to store the collection on first iteration so that
+// it's parent won't be iterated again.
 Enumerable<Integer> ints = Enumerable.of(1,2,3).copy();
 ```
 # Future features?
