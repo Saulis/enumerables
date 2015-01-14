@@ -4,25 +4,37 @@
 ##What?
 Enumerables is a wrapper for Java 8 collections offering functional methods like map and reduce while being mutable and re-iterable at all times.
 
-```java
-Enumerable.of("foo", "bar")
-          .map(x -> x + "bar")
-          .forEach(System.out::println);
+In comparison to Stream, Enumerables improves the usability and readability of the code especially when dealing with small in-memory collections by removing the need of collecting the results after every iteration. 
 
-//-> foobar
-//-> barbar
+```java
+// With Enumerables, you can do this:
+Enumerable<Integer> ints = Enumerable.range(1,10);
+ints.filter(x -> x % 2 == 0)
+    .forEach(System.out::println);
+// -> 0,2,4,6,8
+
+ints.filter(x -> x % 2 != 0)
+    .forEach(System.out::println);
+// -> 1,3,5,7,9
+
+// With Streams, you cannot re-use the same stream:
+IntStream.rangeClosed(1, 10)
+         .filter(x -> x % 2 == 0)
+         .forEach(x -> System.out.println(x));
+// -> 0,2,4,6,8
+
+// IntStream and other typed streams are also really nitpicky
+// about the parameter types, so we can't use System.out.println(int i)
+// in it's short form even though it consumes integers.
+IntStream.rangeClosed(1, 10)
+         .filter(x -> x % 2 != 0)
+         .forEach(x -> System.out.println(x));
+// -> 1,3,5,7,9
 ```
-Looks like [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) right? Enumerables actually is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's Stream where possible.
+Enumerables is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) API where possible.
 
 ##Why?
-###tl;dr
-- Stream vs. Enumerable
-- use once vs. implicitly re-iterable
-- performance optimized vs. developer balanced between readbility/performance
-- type changes array->stream->list vs. iterable type that can be safely passed as a method argument and used throughout the system
-
-
-Streams in Java 8 are built for performance and the inability to re-iterate a collection can save you from for example accidentally querying a database multiple times on runtime. And that's a good thing.
+Streams in Java 8 are built for performance and the inability to re-iterate a collection can save you from for example accidentally querying a database multiple times on runtime.
 
 However, it's not uncommon that you have a situation where you just have to re-iterate a collection multiple times.
 ```java
@@ -52,7 +64,7 @@ List<Integer> mappedList = Stream.of(1, 2, 3)
 mappedList.stream().findFirst();
 mappedList.stream().findAny();
 ```
-Now, don't get me wrong - I like that my programs perform well. But - I do believe that the developers should be given more control - in this case  control over balancing between performance and readability.
+Performance is of course important. However, code usability and readability is also important. Enumerables enables you to adjust the balance between performance and readability to whatever suits your needs.
 ```java
 Enumerable<Integer> ints = Enumerable.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 Enumerable<Integer> evens = ints.filter(x -> x % 2 == 0);
