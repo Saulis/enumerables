@@ -95,7 +95,7 @@ Because Enumerable is re-iterable and mutable, Enumerable objects are safe to pa
 private Enumerable<Integer> doSomeRandomStuffWeWantToExtract(int n) {
     return Enumerable.range(1, n)
                      .map(Random::new)
-                     .map(Random.nextInt);
+                     .map(Random::nextInt);
 }
 ```
 
