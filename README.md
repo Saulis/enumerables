@@ -19,19 +19,20 @@ ints.filter(x -> x % 2 != 0)
     .forEach(System.out::println);
 // -> 1,3,5,7,9
 
-// With Streams, you cannot re-use the same stream:
+// With Streams, you usually are forced to
+// duplicate the same stream like this:
 IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 == 0)
          .forEach(x -> System.out.println(x));
 // -> 0,2,4,6,8
 
-// IntStream and other typed streams are also really nitpicky
-// about the parameter types, so we can't use System.out.println(int i)
-// in it's short form even though it consumes integers.
 IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 != 0)
          .forEach(x -> System.out.println(x));
 // -> 1,3,5,7,9
+// IntStream and other typed streams are also really nitpicky
+// about the parameter types, so we can't use System.out.println(int i)
+// in it's short form even though it consumes integers.
 ```
 Enumerables is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) API where possible.
 
