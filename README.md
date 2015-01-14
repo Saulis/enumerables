@@ -19,8 +19,8 @@ ints.filter(x -> x % 2 != 0)
     .forEach(System.out::println);
 // -> 1,3,5,7,9
 
-// With Streams, you usually are forced to
-// duplicate the same stream like this:
+// With Streams, given the same situation,
+// you are usually forced to the same stream like this:
 IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 == 0)
          .forEach(x -> System.out.println(x));
