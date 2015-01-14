@@ -91,6 +91,12 @@ List<Integer> ints1 = copy.toList();
 Optional<Integer> first = copy.findFirst();
 ```
 Because Enumerable is re-iterable and mutable, Enumerable objects are safe to pass and use as method arguments. This is a distinct difference compared to Streams. Therefore there's no need to collect them into lists and then back to an Enumerable later - this improves the readability of the code.
+```java
+public Enumerable<Integer> getSomeRandoms(int n) {
+    return Enumerable.range(1, n)
+                     .map(x -> new Random(x).nextInt());
+}
+```
 
 #Usage examples
 
