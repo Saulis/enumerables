@@ -74,6 +74,10 @@ public class Enumerable<T> implements Iterable<T> {
         return anyMatch(x -> x.equals(item));
     }
 
+    /*
+        Returns a copy of the enumerable. Will force iteration and is unaffected
+        by changes to the parent.
+     */
     public Enumerable<T> copy() {
         LinkedList<T> list = new LinkedList<>();
         forEach(x -> list.add(x));
@@ -206,6 +210,16 @@ public class Enumerable<T> implements Iterable<T> {
         forEach(x -> list.add(0, x));
 
         return new Enumerable<>(() -> list.iterator());
+    }
+
+    /*
+        Returns a new enumerable which will create a copy of the enumerable
+        during first iteration.
+     */
+    public Enumerable<T> save() {
+        LinkedList<T> list = new LinkedList<>();
+
+        return new Enumerable<>(() -> new SaveIterator<>(iterator(), list));
     }
 
     public boolean sizeIsExactly(long n) {

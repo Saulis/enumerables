@@ -17,4 +17,18 @@ public class CopyTest {
         assertThat(strings.count(), is(1));
     }
 
+    @Test
+    public void saveCreatesACopyAfterFirstIteration() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("foo");
+
+        Enumerable<String> strings = Enumerable.of(list).save();
+
+        list.add("bar");
+        assertThat(strings.count(), is(2)); //count() will trigger iteration.
+
+        list.add("foobar");
+        assertThat(strings.count(), is(2));
+    }
+
 }
