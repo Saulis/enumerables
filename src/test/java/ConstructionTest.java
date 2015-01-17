@@ -2,12 +2,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertTrue;
@@ -33,6 +28,18 @@ public class ConstructionTest {
 
         list.add("bar");
         assertTrue(strings.sizeIsExactly(2));
+    }
+
+    @Test
+    public void enumerableDoesNotChangeAfterConstruction() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("foo");
+
+        Enumerable<String> strings = Enumerable.copyOf(list);
+        assertTrue(strings.sizeIsExactly(1));
+
+        list.add("bar");
+        assertTrue(strings.sizeIsExactly(1));
     }
 
     @Test

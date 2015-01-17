@@ -22,6 +22,14 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new ArrayIterator<>(items));
     }
 
+    /*
+     * Returns a new enumerable constructed from the specified iterable.
+     * Enumerable will iterate the iterable immediately to create a copy.
+     */
+    public static <T> Enumerable<T> copyOf(Iterable<T> items) {
+        return of(items).copy();
+    }
+
     public boolean allMatch(Predicate<T> predicate) {
         return filter(predicate.negate()).isEmpty();
     }
@@ -145,7 +153,7 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public <R> Enumerable<R> cast(Class<R> c) {
-        return map(x -> (R)x);
+        return map(x -> (R) x);
     }
 
     public <R> Enumerable<R> filterType(Class<R> c) {
@@ -227,4 +235,5 @@ public class Enumerable<T> implements Iterable<T> {
     public List<T> toList() {
         return collect(Collectors.toList());
     }
+
 }
