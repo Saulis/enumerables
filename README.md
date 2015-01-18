@@ -20,7 +20,7 @@ ints.filter(x -> x % 2 != 0)
 // -> 1,3,5,7,9
 
 // With Streams, given the same situation,
-// you are usually forced to the same stream like this:
+// you are usually forced to replicate the same stream like this:
 IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 == 0)
          .forEach(x -> System.out.println(x));
