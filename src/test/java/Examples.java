@@ -21,7 +21,7 @@ public class Examples {
         Enumerable<Integer> empty = Enumerable.empty();
         // -> []
 
-        IntEnumerable range = Enumerable.range(1, 5);
+        Enumerable<Integer> range = Enumerable.range(1, 5);
         // -> [1,2,3,4,5]
 
         Enumerable<Integer> repeat = Enumerable.repeat(() -> 1, 5);
@@ -42,16 +42,12 @@ public class Examples {
 
         keys.flatMap(x -> hashMap.get(x));
         // -> [1,2,3,4,5]
-
-        // Due to type erasure, there are also Double, Long and IntEnumerable
-        DoubleEnumerable doubles = keys.flatMap(x -> hashMap.get(x))
-                                       .mapToDouble(x -> x.doubleValue());
     }
 
     @Test
     public void filtering() {
 
-        IntEnumerable range = Enumerable.range(1, 10);
+        Enumerable<Integer> range = Enumerable.range(1, 10);
 
         range.filter(x -> x % 2 == 0);
         // -> [2,4,6,8,10]
@@ -101,24 +97,25 @@ public class Examples {
                 new Accumulator<String, Object>(0, (seed, x) -> (int)seed + x.length()));
         // -> ["foobar", 6]
 
-        Enumerable.range(1, 3).sum();
+        Enumerable.range(1, 3).sum(x -> x);
         // -> 6
 
-        Enumerable.range(1, 3).average();
-        // -> 3
+        Enumerable.range(1, 3).sum(x -> x.doubleValue());
+        // -> 6.0
+
+        Enumerable.range(1, 3).average(x -> x);
+        // -> 3.0
 
         Enumerable.of(1, 2, 3).min(x -> x);
-        Enumerable.range(1, 3).min();
         // -> 1
 
         Enumerable.of(1, 2, 3).max(x -> x);
-        Enumerable.range(1, 3).max();
         // -> 3
     }
 
     @Test
     public void collecting() {
-        IntEnumerable range = Enumerable.range(1, 10);
+        Enumerable<Integer> range = Enumerable.range(1, 10);
 
         range.limit(5);
         // -> [1,2,3,4,5]
