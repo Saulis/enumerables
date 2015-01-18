@@ -98,9 +98,6 @@ public class Examples {
         // -> ["foobar", 6]
 
         Enumerable.range(1, 3).sum(x -> x);
-        // -> 6
-
-        Enumerable.range(1, 3).sum(x -> x.doubleValue());
         // -> 6.0
 
         Enumerable.range(1, 3).average(x -> x);

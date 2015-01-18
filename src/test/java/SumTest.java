@@ -19,18 +19,18 @@ public class SumTest {
     public void integerSumIsCalculated() {
         Enumerable<String> strings = Enumerable.of("foo", "bar", "bah");
 
-        Optional<Integer> sum = strings.sum(x -> x.length());
+        Optional<Double> sum = strings.sum(x -> x.length());
 
-        assertThat(sum.get(), is(9));
+        assertThat(sum.get(), is(9.0));
     }
 
     @Test
     public void longSumIsCalculated() {
         Enumerable<String> strings = Enumerable.of("foo", "bar", "bah");
 
-        Optional<Long> sum = strings.sum(x -> (long)x.length());
+        Optional<Double> sum = strings.sum(x -> (long)x.length());
 
-        assertThat(sum.get(), is(9l));
+        assertThat(sum.get(), is(9.0));
     }
 
     @Test
@@ -42,10 +42,12 @@ public class SumTest {
         assertThat(sum.get(), is(9.0));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void unsupportedOperationForSumIsThrown() {
+    @Test
+    public void floatSumIsCalculated() {
         Enumerable<String> strings = Enumerable.of("foo", "bar", "bah");
 
-        Optional<Float> sum = strings.sum(x -> (float) x.length());
+        Optional<Double> sum = strings.sum(x -> (float) x.length());
+
+        assertThat(sum.get(), is(9.0));
     }
 }

@@ -38,6 +38,26 @@ public class Enumerable<T> implements Iterable<T> {
         return !filter(predicate).isEmpty();
     }
 
+    /*
+        Reduces the enumerable into an average based on the provided mapping function.
+        Will convert numbers into doubles to perform the calculations. Use multi reduce
+        with custom Accumulators if you need more precision.
+
+        As with all reduction functions, average will force iteration.
+     */
+    public <R extends Number> Optional<Double> average(Function<T, R> mappingFunction) {
+        if(map(mappingFunction).isEmpty()) {
+            return Optional.empty();
+        }
+
+        Accumulator<R, Double> sumAccumulator = new Accumulator<>(0.0, (acc, x) -> acc + x.doubleValue());
+        Accumulator<R, Double> countAccumulator = new Accumulator<>(0.0, (acc, x) -> acc + 1.0);
+
+        List<Double> sumAndCount = map(mappingFunction).reduce(sumAccumulator, countAccumulator);
+
+        return Optional.of(sumAndCount.get(0) / sumAndCount.get(1));
+    }
+
     public <R, A> R collect(Collector<T, A, R> collector) {
         Supplier<A> supplier = collector.supplier();
         BiConsumer<A, T> accumulator = collector.accumulator();
@@ -248,41 +268,20 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new SkipIterator<>(this, n));
     }
 
-    public <R extends Number> Optional<Double> average(Function<T, R> mappingFunction) {
-        if(map(mappingFunction).isEmpty()) {
-            return Optional.empty();
-        }
+    /*
+        Reduces the enumerable into a sum based on the provided mapping function.
+        Will convert numbers into doubles to perform the calculations. Use reduce
+        with a custom Accumulator if you need more precision.
 
-        Accumulator<R, Double> sumAccumulator = new Accumulator<>(0.0, (acc, x) -> acc + x.doubleValue());
-        Accumulator<R, Double> countAccumulator = new Accumulator<>(0.0, (acc, x) -> acc + 1.0);
-
-        List<Double> sumAndCount = map(mappingFunction).reduce(sumAccumulator, countAccumulator);
-
-        return Optional.of(sumAndCount.get(0) / sumAndCount.get(1));
-    }
-
-    public <R extends Number> Optional<R> sum(Function<T, R> mappingFunction) {
+        As with all reduction functions, sum will force iteration.
+     */
+    public <R extends Number> Optional<Double> sum(Function<T, R> mappingFunction) {
         if(isEmpty()) {
             return Optional.empty();
         }
 
-        Enumerable<R> mapped = map(mappingFunction);
-        R firstItem = mapped.findFirst().get();
-
-        // Hate to do this, but thanks to type erasure I needed to do a compromise.
-        // From the users perspective this works much better than extending Enumerable
-        // into IntEnumerable etc. just for the sake of sum function.
-        // Still considering on switching the sum method to just return doubles...
-        if(firstItem instanceof Integer) {
-            return (Optional<R>)Optional.of(mapped.reduce(0, (seed, x) -> seed + x.intValue()));
-        } else if(firstItem instanceof Double) {
-            return (Optional<R>)Optional.of(mapped.reduce(0.0, (seed, x) -> seed + x.doubleValue()));
-        } else if (firstItem instanceof Long) {
-            return (Optional<R>)Optional.of(mapped.reduce(0l, (seed, x) -> seed + x.longValue()));
-        }
-
-        throw new UnsupportedOperationException(
-                String.format("Sum operation is not supported for type %s", firstItem.getClass()));
+        return Optional.of(map(mappingFunction)
+                          .reduce(0.0, (seed, x) -> seed + x.doubleValue()));
     }
 
     public T[] toArray(Function<Integer, T[]> initFunction) {
