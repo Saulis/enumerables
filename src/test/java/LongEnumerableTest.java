@@ -10,7 +10,7 @@ public class LongEnumerableTest {
 
     @Test
     public void emptySumIsCalculated() {
-        Enumerable<Integer> empty = Enumerable.empty();
+        Enumerable<Long> empty = Enumerable.empty();
 
         assertFalse(empty.mapToLong(x -> x.longValue()).sum().isPresent());
     }

@@ -139,6 +139,10 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new MapIterator<>(this, function));
     }
 
+    public DoubleEnumerable mapToDouble(Function<T, Double> function) {
+        return new DoubleEnumerable(() -> new MapIterator<>(this, function));
+    }
+
     public IntEnumerable mapToInt(Function<T, Integer> function) {
         return new IntEnumerable(() -> new MapIterator<>(this, function));
     }
