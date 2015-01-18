@@ -38,19 +38,6 @@ public class Enumerable<T> implements Iterable<T> {
         return !filter(predicate).isEmpty();
     }
 
-    public Optional<Double> average(Function<T, Integer> function) {
-        if(isEmpty()) {
-            return Optional.empty();
-        }
-
-        AbstractMap.SimpleEntry<Double, Double> sumAndCount =
-                reduce(new AbstractMap.SimpleEntry<>(0.0, 0.0), (acc, x) ->
-                        new AbstractMap.SimpleEntry<>(acc.getKey() + function.apply(x),
-                                acc.getValue() + 1.0));
-
-        return Optional.of(sumAndCount.getKey() / sumAndCount.getValue());
-    }
-
     public <R, A> R collect(Collector<T, A, R> collector) {
         Supplier<A> supplier = collector.supplier();
         BiConsumer<A, T> accumulator = collector.accumulator();
@@ -123,6 +110,14 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new ConcatIterator<>(iterator));
     }
 
+    public void forEach(BiConsumer<T, Integer> consumer) {
+        int i = 0;
+
+        for (T t : this) {
+            consumer.accept(t, i++);
+        }
+    }
+
     public <K> Map<K, List<T>> groupBy(Function<T, K> function) {
         return collect(Collectors.groupingBy(function));
     }
@@ -140,8 +135,12 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new LimitIterator(this, maxSize));
     }
 
-    public <R> Enumerable<R> map(Function<T, R> func) {
-        return new Enumerable<>(() -> new MapIterator<>(this, func));
+    public <R> Enumerable<R> map(Function<T, R> function) {
+        return new Enumerable<>(() -> new MapIterator<>(this, function));
+    }
+
+    public IntEnumerable mapToInt(Function<T, Integer> function) {
+        return new IntEnumerable(() -> new MapIterator<>(this, function));
     }
 
     public <R extends Comparable<R>> Optional<T> max(Function<T, R> function) {
@@ -180,11 +179,11 @@ public class Enumerable<T> implements Iterable<T> {
         return orderBy(comparator.reversed());
     }
 
-    public static Enumerable<Integer> range(int from, int to) {
+    public static IntEnumerable range(int from, int to) {
         if(from <= to) {
-            return new Enumerable<>(() -> new FunctionIterator<>(from - 1, x -> x + 1, to - from + 1));
+            return new IntEnumerable(() -> new FunctionIterator<>(from - 1, x -> x + 1, to - from + 1));
         } else {
-            return new Enumerable<>(() -> new FunctionIterator<>(from + 1, x -> x - 1, from - to + 1));
+            return new IntEnumerable(() -> new FunctionIterator<>(from + 1, x -> x - 1, from - to + 1));
         }
     }
 
@@ -199,6 +198,21 @@ public class Enumerable<T> implements Iterable<T> {
         }
 
         return result;
+    }
+
+    public <R> List<R> reduce(Accumulator<T, R>... reductions) {
+        List<R> res = new ArrayList<>();
+        Iterator<T> iterator = iterator();
+
+        while(iterator.hasNext()) {
+            T next = iterator.next();
+
+            for(int i=0;i<reductions.length;i++) {
+                res.add(i, reductions[i].apply(next));
+            }
+        }
+
+        return res.subList(0, reductions.length);
     }
 
     public static <T> Enumerable<T> repeat(Supplier<T> supplier, int iterations) {
@@ -238,12 +252,13 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new SkipIterator<>(this, n));
     }
 
-    public Optional<Integer> sum(Function<T, Integer> function) {
-        if(isEmpty()) {
-            return Optional.empty();
-        }
+    public T[] toArray(Function<Integer, T[]> initFunction) {
 
-        return Optional.of(reduce(0, (acc, x) -> acc + function.apply(x)));
+        T[] array = initFunction.apply(count());
+
+        forEach((x, i) -> array[i] = x);
+
+        return array;
     }
 
     public List<T> toList() {
