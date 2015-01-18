@@ -108,6 +108,9 @@ public class Examples {
 
         Enumerable.of(1, 2, 3).max(x -> x);
         // -> 3
+
+        Enumerable.range(1,10).count();
+        // -> 6
     }
 
     @Test
