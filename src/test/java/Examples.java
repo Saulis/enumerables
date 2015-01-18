@@ -90,7 +90,7 @@ public class Examples {
                 new Accumulator<>("", (seed, x) -> seed + x));
         // -> "foobar"
 
-        // For performance, you can use multi reduce can be used to run multiple
+        // For performance, multi reduce can be used to run multiple
         // accumulators during a single iteration.
         Enumerable.of("foo", "bar").reduce(
                 new Accumulator<String, Object>("", (seed, x) -> seed + x),
