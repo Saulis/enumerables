@@ -143,6 +143,11 @@ public class Enumerable<T> implements Iterable<T> {
         return new IntEnumerable(() -> new MapIterator<>(this, function));
     }
 
+    public LongEnumerable mapToLong(Function<T, Long> function) {
+        return new LongEnumerable(() -> new MapIterator<>(this, function));
+    }
+
+
     public <R extends Comparable<R>> Optional<T> max(Function<T, R> function) {
         return orderByDescending(function).findFirst();
     }
