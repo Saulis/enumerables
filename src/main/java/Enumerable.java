@@ -273,19 +273,30 @@ public class Enumerable<T> implements Iterable<T> {
         Splits the enumerable into multiple enumerables using the provided predicate(s).
      */
     public Enumerable<T>[] split(Predicate<T>... predicates) {
-        HashMap<Predicate<T>, List<T>> results = new HashMap<>();
+        Enumerable<BiPredicate<T, Integer>> biPredicates =
+                Enumerable.of(predicates).map(x -> (y, i) -> x.test(y));
+
+        return split(biPredicates.toArray());
+    }
+
+    /*
+        Splits the enumerable into multiple enumerables using the provided predicate(s).
+     */
+    public Enumerable<T>[] split(BiPredicate<T, Integer>... predicates) {
+
+        HashMap<BiPredicate<T, Integer>, List<T>> results = new HashMap<>();
         ArrayList<T> remainder = new ArrayList<>();
 
-        for (Predicate<T> predicate : predicates) {
+        for (BiPredicate<T, Integer> predicate : predicates) {
             results.put(predicate, new ArrayList<>());
         }
 
-        forEach(x -> {
+        forEach((x, j) -> {
             boolean match = false;
 
             for (int i = 0; i < predicates.length; i++) {
-                Predicate<T> predicate = predicates[i];
-                if (predicate.test(x)) {
+                BiPredicate<T, Integer> predicate = predicates[i];
+                if (predicate.test(x, j)) {
                     results.get(predicate).add(x);
                     match = true;
                 }

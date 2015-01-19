@@ -23,4 +23,12 @@ public class SplitTest {
         assertThat(evensAndOdds[0], contains(2,4,6,8,10));
         assertThat(evensAndOdds[1], contains(1,3,5,7,9));
     }
+
+    @Test
+    public void enumerableIsSplitByIndex() {
+        Enumerable<Integer>[] split = Enumerable.range(1, 10).split((x, i) -> i < 5);
+
+        assertThat(split[0], contains(1,2,3,4,5));
+        assertThat(split[1], contains(6,7,8,9,10));
+    }
 }
