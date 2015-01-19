@@ -52,6 +52,9 @@ public class Examples {
         range.filter(x -> x % 2 == 0);
         // -> [2,4,6,8,10]
 
+        range.split(x -> x % 2 == 0);
+        // -> [ [2,4,6,8,10], [1,3,5,7,9] ]
+
         Enumerable.of(1, "foo", 2.0f, "bar").filterType(String.class);
         // -> ["foo", "bar"]
 

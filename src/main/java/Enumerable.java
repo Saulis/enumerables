@@ -269,6 +269,40 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     /*
+        Splits the enumerable into multiple enumerables using the provided predicate(s).
+     */
+    public List<Enumerable<T>> split(Predicate<T>... predicates) {
+        HashMap<Predicate<T>, List<T>> results = new HashMap<>();
+        ArrayList<T> remainder = new ArrayList<>();
+
+        for (Predicate<T> predicate : predicates) {
+            results.put(predicate, new ArrayList<>());
+        }
+
+        forEach(x -> {
+            boolean match = false;
+
+            for (int i = 0; i < predicates.length; i++) {
+                Predicate<T> predicate = predicates[i];
+                if (predicate.test(x)) {
+                    results.get(predicate).add(x);
+                    match = true;
+                }
+            }
+
+            if (!match) {
+                remainder.add(x);
+            }
+        });
+
+        return Enumerable.of(predicates)
+                         .map(k -> results.get(k))
+                         .concat(remainder)
+                         .map(x -> Enumerable.of(x))
+                         .toList();
+    }
+
+    /*
         Reduces the enumerable into a sum based on the provided mapping function.
         Will convert numbers into doubles to perform the calculations. Use reduce
         with a custom Accumulator if you need more precision.

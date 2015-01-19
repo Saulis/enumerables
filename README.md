@@ -2,21 +2,28 @@
 
 
 ##What?
-Enumerables is a wrapper for Java 8 collections offering functional methods like map and reduce while being mutable and re-iterable at all times.
+Enumerables is a wrapper for Java 8 collections offering functional methods like map and reduce while being mutable and (re-)iterable at all times.
 
 In comparison to Stream, Enumerables improves the usability and readability of the code especially when dealing with small in-memory collections by removing the need of having a dedicated collection for each iteration.
 
-In short, no in-between collecting the results after every iteration, no methods with objects turning from lists to streams and back, no runtime exceptions.
+In short, no in-between collecting the results after every iteration, no methods with objects turning from lists to streams and back, no runtime exceptions. You can use it like any other Iterable.
 
 ```java
 // With Enumerables, you can do this:
 Enumerable<Integer> ints = Enumerable.range(1,10);
-ints.filter(x -> x % 2 == 0)
-    .forEach(System.out::println);
-// -> 0,2,4,6,8
+ints.filter(x -> x % 2 == 0).forEach(System.out::println);
+// -> 2,4,6,8,10
 
-ints.filter(x -> x % 2 != 0)
-    .forEach(System.out::println);
+ints.filter(x -> x % 2 != 0).forEach(System.out::println);
+// -> 1,3,5,7,9
+
+// There's also a split function that you can use to optimize flow and performance.
+List<Enumerable<Integer>> evensAndOdds = Enumerable.range(1, 10).split(x -> x % 2 == 0);
+
+evensAddOdds.get(0).forEach(System.out::println);
+// -> 2,4,6,8,10
+
+evensAddOdds.get(1).forEach(System.out::println);
 // -> 1,3,5,7,9
 
 // With Streams, given the same situation,
@@ -24,7 +31,7 @@ ints.filter(x -> x % 2 != 0)
 IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 == 0)
          .forEach(x -> System.out.println(x));
-// -> 0,2,4,6,8
+// -> 2,4,6,8,10
 
 IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 != 0)
