@@ -18,12 +18,12 @@ ints.filter(x -> x % 2 != 0).forEach(System.out::println);
 // -> 1,3,5,7,9
 
 // There's also a split function that you can use to optimize flow and performance.
-List<Enumerable<Integer>> evensAndOdds = Enumerable.range(1, 10).split(x -> x % 2 == 0);
+Enumerable<Integer>[] evensAndOdds = Enumerable.range(1, 10).split(x -> x % 2 == 0);
 
-evensAddOdds.get(0).forEach(System.out::println);
+evensAddOdd[0].forEach(System.out::println);
 // -> 2,4,6,8,10
 
-evensAddOdds.get(1).forEach(System.out::println);
+evensAddOdds[1].forEach(System.out::println);
 // -> 1,3,5,7,9
 
 // With Streams, given the same situation,

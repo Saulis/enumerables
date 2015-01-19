@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -271,7 +272,7 @@ public class Enumerable<T> implements Iterable<T> {
     /*
         Splits the enumerable into multiple enumerables using the provided predicate(s).
      */
-    public List<Enumerable<T>> split(Predicate<T>... predicates) {
+    public Enumerable<T>[] split(Predicate<T>... predicates) {
         HashMap<Predicate<T>, List<T>> results = new HashMap<>();
         ArrayList<T> remainder = new ArrayList<>();
 
@@ -299,7 +300,7 @@ public class Enumerable<T> implements Iterable<T> {
                          .map(k -> results.get(k))
                          .concat(remainder)
                          .map(x -> Enumerable.of(x))
-                         .toList();
+                         .toArray();
     }
 
     /*
@@ -315,16 +316,32 @@ public class Enumerable<T> implements Iterable<T> {
         }
 
         return Optional.of(map(mappingFunction)
-                          .reduce(0.0, (seed, x) -> seed + x.doubleValue()));
+                .reduce(0.0, (seed, x) -> seed + x.doubleValue()));
     }
 
+    /*
+        Collects the enumerable into an array with a size provided in the init function.
+     */
     public T[] toArray(Function<Integer, T[]> initFunction) {
 
         T[] array = initFunction.apply(count());
 
-        forEach((x, i) -> array[i] = x);
+        limit(array.length).forEach((x, i) -> array[i] = x);
 
         return array;
+    }
+
+    /*
+        Collects the whole enumerable into an array.
+     */
+    public T[] toArray() {
+        if(isEmpty()) {
+            return (T[])new Object[0];
+        }
+
+        Class<?> aClass = findFirst().get().getClass();
+
+        return toArray(size -> (T[]) Array.newInstance(aClass, size));
     }
 
     public List<T> toList() {
