@@ -334,10 +334,10 @@ public class Enumerable<T> implements Iterable<T> {
         Collects the enumerable into an array with a size provided in the init function.
      */
     public T[] toArray(Function<Integer, T[]> initFunction) {
+        Enumerable<T> saved = save();
+        T[] array = initFunction.apply(saved.count());
 
-        T[] array = initFunction.apply(count());
-
-        limit(array.length).forEach((x, i) -> array[i] = x);
+        saved.limit(array.length).forEach((x, i) -> array[i] = x);
 
         return array;
     }
@@ -346,11 +346,13 @@ public class Enumerable<T> implements Iterable<T> {
         Collects the whole enumerable into an array.
      */
     public T[] toArray() {
-        if(isEmpty()) {
+        Optional<T> first = findFirst();
+
+        if(!first.isPresent()) {
             return (T[])new Object[0];
         }
 
-        Class<?> aClass = findFirst().get().getClass();
+        Class<?> aClass = first.get().getClass();
 
         return toArray(size -> (T[]) Array.newInstance(aClass, size));
     }
