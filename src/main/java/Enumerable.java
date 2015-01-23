@@ -98,6 +98,10 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public Enumerable<T> filter(Predicate<T> predicate) {
+        return filter((x,i) -> predicate.test(x));
+    }
+
+    public Enumerable<T> filter(BiPredicate<T,Integer> predicate) {
         return new Enumerable<>(() -> new FilterIterator<>(this, predicate));
     }
 
@@ -243,7 +247,7 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> list.iterator());
     }
 
-    /*
+    /**
         Returns a new enumerable which will create a copy of the enumerable
         during first iteration.
      */
@@ -269,7 +273,7 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new SkipIterator<>(this, n));
     }
 
-    /*
+    /**
         Splits the enumerable into multiple enumerables using the provided predicate(s).
      */
     public Enumerable<T>[] split(Predicate<T>... predicates) {
@@ -279,11 +283,27 @@ public class Enumerable<T> implements Iterable<T> {
         return split(biPredicates.toArray());
     }
 
-    /*
+    /**
         Splits the enumerable into multiple enumerables using the provided predicate(s).
      */
     public Enumerable<T>[] split(BiPredicate<T, Integer>... predicates) {
 
+        HashMap<BiPredicate<T, Integer>, List<T>> lists = new HashMap<>();
+        Enumerable<BiPredicate<T, Integer>> predicates1 = Enumerable.of(predicates);
+        predicates1.forEach(x -> lists.put(x, new ArrayList<>()));
+        ArrayList<T> remainder = new ArrayList<>();
+
+        IteratorSplitter<T> parentIterator = new IteratorSplitter<>(this, predicates);
+//        Enumerable<SplitIterator<T>> childIterators = predicates1.map(x -> new SplitIterator<>(parentIterator, lists.get(x)))
+//                                                                  .concat(new SplitIterator<>(parentIterator, remainder));
+
+        return Enumerable.of(predicates)
+                .map(x -> new Enumerable<T>(() -> parentIterator.getIterator(x)))
+                .concat(new Enumerable<T>(() -> parentIterator.getRemainderIterator()))
+                .toArray();
+
+//        return childIterators.map(x -> new Enumerable<T>(() -> x)).toArray();
+/*
         HashMap<BiPredicate<T, Integer>, List<T>> results = new HashMap<>();
         ArrayList<T> remainder = new ArrayList<>();
 
@@ -311,7 +331,7 @@ public class Enumerable<T> implements Iterable<T> {
                          .map(k -> results.get(k))
                          .concat(remainder)
                          .map(x -> Enumerable.of(x))
-                         .toArray();
+                         .toArray();*/
     }
 
     /*

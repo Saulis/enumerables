@@ -17,6 +17,14 @@ public class FilterTest {
     }
 
     @Test
+    public void itemsAreFilteredByIndex() {
+        Enumerable<Integer> range = Enumerable.range(1, 10);
+
+        assertThat(range.filter((x, i) -> i < 5), contains(1, 2, 3, 4, 5));
+        assertThat(range.filter((x, i) -> i >= 5), contains(6, 7, 8, 9, 10));
+    }
+
+    @Test
     public void noMatchesAreFound() {
         Enumerable<String> enumerable = Enumerable.of("foo", "bah");
 

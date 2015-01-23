@@ -1,22 +1,24 @@
 import java.util.Iterator;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 public class FilterIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
-    private final Predicate<T> predicate;
+    private final BiPredicate<T, Integer> predicate;
+    private int cursor;
     private T nextItemToReturn = null;
 
-    public FilterIterator(Iterable<T> iterable, Predicate<T> predicate) {
+    public FilterIterator(Iterable<T> iterable, BiPredicate<T,Integer> predicate) {
         iterator = iterable.iterator();
         this.predicate = predicate;
+        this.cursor = 0;
     }
 
     @Override
     public boolean hasNext() {
         while(iterator.hasNext()) {
             T next = iterator.next();
-            if(predicate.test(next)) {
+            if(predicate.test(next, cursor++)) {
                 nextItemToReturn = next;
 
                 return true;
