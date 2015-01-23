@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class IteratorSplitter<T> implements Iterator<T>{
+public class IteratorSplitter<T>{
 
     private final Iterator<T> iterator;
     private final HashMap<BiPredicate<T, Integer>, List<T>> matchedItems;
@@ -30,13 +30,11 @@ public class IteratorSplitter<T> implements Iterator<T>{
         return new SplitIterator<>(this, remainder);
     }
 
-    @Override
     public boolean hasNext() {
         return iterator.hasNext();
     }
 
-    @Override
-    public T next() {
+    public void iterate() {
         T next = iterator.next();
 
         Enumerable<BiPredicate<T,Integer>> matchedPredicates =
@@ -49,6 +47,5 @@ public class IteratorSplitter<T> implements Iterator<T>{
         }
 
         cursor++;
-        return next;
     }
 }

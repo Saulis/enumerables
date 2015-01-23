@@ -3,14 +3,14 @@ import java.util.List;
 
 public class SplitIterator<T> implements Iterator<T> {
 
-    private final IteratorSplitter<T> iterator;
+    private final IteratorSplitter<T> splitter;
     private final List<T> list;
     private int cursor;
 
-    public SplitIterator(IteratorSplitter<T> iterator, List<T> list) {
+    public SplitIterator(IteratorSplitter<T> splitter, List<T> list) {
 
         this.cursor = 0;
-        this.iterator = iterator;
+        this.splitter = splitter;
         this.list = list;
     }
 
@@ -21,11 +21,11 @@ public class SplitIterator<T> implements Iterator<T> {
                 return true;
             }
 
-            if(!iterator.hasNext()) {
+            if(!splitter.hasNext()) {
                 return false;
             }
 
-            iterator.next();
+            splitter.iterate();
         }
     }
 

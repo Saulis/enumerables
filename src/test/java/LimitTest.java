@@ -1,8 +1,10 @@
 import com.google.inject.Inject;
 import org.jukito.JukitoRunner;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -23,6 +25,14 @@ public class LimitTest {
 
     @Inject
     Iterator<String> stringIterator;
+
+    @Before
+    public void setup() {
+        when(stringIterable.iterator()).thenReturn(stringIterator);
+        when(stringIterator.hasNext()).thenReturn(true);
+        when(stringIterator.next()).thenReturn("foobar");
+
+    }
 
     @Test
     public void firstItemIsTaken() {
@@ -55,12 +65,19 @@ public class LimitTest {
 
     @Test
     public void firstCallsNextOnlyOnce() {
-        when(stringIterable.iterator()).thenReturn(stringIterator);
-        when(stringIterator.hasNext()).thenReturn(true);
-        when(stringIterator.next()).thenReturn("foobar");
         Enumerable<String> strings = Enumerable.of(stringIterable);
 
         strings.findFirst();
+
+        verify(stringIterator, times(1)).hasNext();
+        verify(stringIterator, times(1)).next();
+    }
+
+    @Test
+    public void limitCallsNextOnlyOnce() {
+        Enumerable<String> strings = Enumerable.of(stringIterable);
+
+        strings.limit(1).count();
 
         verify(stringIterator, times(1)).hasNext();
         verify(stringIterator, times(1)).next();
@@ -93,6 +110,17 @@ public class LimitTest {
     @Test
     public void lastItemIsTaken() {
         assertThat(Enumerable.of(1,2,3).findLast().get(), is(3));
+    }
+
+    @Test
+    public void iteratorIsCalledCorrectNumberOfTimes() {
+        ArrayList<Integer> calls = new ArrayList<>();
+
+        Enumerable<Integer> limit = Enumerable.range(1, 10)
+                                              .peek(x -> calls.add(x))
+                                              .limit(5);
+
+        assertThat(limit.count(), is(calls.size()));
     }
 
 }

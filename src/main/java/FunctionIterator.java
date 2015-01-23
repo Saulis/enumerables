@@ -1,23 +1,28 @@
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class FunctionIterator<T> implements Iterator<T> {
 
+    private final Predicate<Integer> predicate;
     private T seed;
     private final Function<T, T> function;
-    private final int iterations;
     private int cursor;
 
-    public FunctionIterator(T seed, Function<T, T> function, int iterations) {
+    public FunctionIterator(T seed, Function<T, T> function, Predicate<Integer> predicate) {
         cursor = 0;
         this.seed = seed;
         this.function = function;
-        this.iterations = iterations;
+        this.predicate = predicate;
+    }
+
+    public FunctionIterator(T seed, Function<T, T> function, int iterations) {
+        this(seed, function, x -> x < iterations);
     }
 
     @Override
     public boolean hasNext() {
-        return cursor < iterations;
+        return predicate.test(cursor);
     }
 
     @Override

@@ -200,6 +200,10 @@ public class Enumerable<T> implements Iterable<T> {
         return orderBy(comparator.reversed());
     }
 
+    public Enumerable<T> peek(Consumer<T> consumer) {
+        return new Enumerable<>(() -> new PeekIterator<>(this, consumer));
+    }
+
     public static Enumerable<Integer> range(int from, int to) {
         if(from <= to) {
             return new Enumerable(() -> new FunctionIterator<>(from - 1, x -> x + 1, to - from + 1));
@@ -274,7 +278,12 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     /**
-        Splits the enumerable into multiple enumerables using the provided predicate(s).
+     * Splits the enumerable into multiple enumerables using the provided predicate(s).
+     * @param predicates Predicates to match with.
+     * @return An array of enumerables splitted by the provided predicate(s).
+     *         Resulting array will always have the size of number predicates +
+     *         one. Last element in the array will hold items that don't match
+     *         any of the provided predicates.
      */
     public Enumerable<T>[] split(Predicate<T>... predicates) {
         Enumerable<BiPredicate<T, Integer>> biPredicates =
@@ -284,54 +293,20 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     /**
-        Splits the enumerable into multiple enumerables using the provided predicate(s).
+     * Splits the enumerable into multiple enumerables using the provided predicate(s).
+     * @param predicates Predicates to match with.
+     * @return An array of enumerables splitted by the provided predicate(s).
+     *         Resulting array will always have the size of number predicates +
+     *         one. Last element in the array will hold items that don't match
+     *         any of the provided predicates.
      */
     public Enumerable<T>[] split(BiPredicate<T, Integer>... predicates) {
-
-        HashMap<BiPredicate<T, Integer>, List<T>> lists = new HashMap<>();
-        Enumerable<BiPredicate<T, Integer>> predicates1 = Enumerable.of(predicates);
-        predicates1.forEach(x -> lists.put(x, new ArrayList<>()));
-        ArrayList<T> remainder = new ArrayList<>();
-
-        IteratorSplitter<T> parentIterator = new IteratorSplitter<>(this, predicates);
-//        Enumerable<SplitIterator<T>> childIterators = predicates1.map(x -> new SplitIterator<>(parentIterator, lists.get(x)))
-//                                                                  .concat(new SplitIterator<>(parentIterator, remainder));
+        IteratorSplitter<T> splitter = new IteratorSplitter<>(this, predicates);
 
         return Enumerable.of(predicates)
-                .map(x -> new Enumerable<T>(() -> parentIterator.getIterator(x)))
-                .concat(new Enumerable<T>(() -> parentIterator.getRemainderIterator()))
+                .map(x -> new Enumerable<T>(() -> splitter.getIterator(x)))
+                .concat(new Enumerable<T>(() -> splitter.getRemainderIterator()))
                 .toArray();
-
-//        return childIterators.map(x -> new Enumerable<T>(() -> x)).toArray();
-/*
-        HashMap<BiPredicate<T, Integer>, List<T>> results = new HashMap<>();
-        ArrayList<T> remainder = new ArrayList<>();
-
-        for (BiPredicate<T, Integer> predicate : predicates) {
-            results.put(predicate, new ArrayList<>());
-        }
-
-        forEach((x, j) -> {
-            boolean match = false;
-
-            for (int i = 0; i < predicates.length; i++) {
-                BiPredicate<T, Integer> predicate = predicates[i];
-                if (predicate.test(x, j)) {
-                    results.get(predicate).add(x);
-                    match = true;
-                }
-            }
-
-            if (!match) {
-                remainder.add(x);
-            }
-        });
-
-        return Enumerable.of(predicates)
-                         .map(k -> results.get(k))
-                         .concat(remainder)
-                         .map(x -> Enumerable.of(x))
-                         .toArray();*/
     }
 
     /*

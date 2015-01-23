@@ -52,8 +52,9 @@ public class Examples {
         range.filter(x -> x % 2 == 0);
         // -> [2,4,6,8,10]
 
-        range.split(x -> x % 2 == 0);
-        // -> [ [2,4,6,8,10], [1,3,5,7,9] ]
+        range.split(x -> x % 2 == 0,
+                    x -> x % 3 == 0);
+        // -> [ [2,4,6,8,10], [3,6,9], [1,5,7] ]
 
         Enumerable.of(1, "foo", 2.0f, "bar").filterType(String.class);
         // -> ["foo", "bar"]
@@ -163,5 +164,8 @@ public class Examples {
         // copy() can be used to store the collection on first iteration so that
         // it's parent won't be iterated again.
         Enumerable<Integer> ints = Enumerable.of(1,2,3).copy();
+
+        // peek can be used to perform an action for an item while iterating.
+        Enumerable.of(1,2,3).peek(System.out::println).copy();
     }
 }

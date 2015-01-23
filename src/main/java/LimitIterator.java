@@ -14,7 +14,7 @@ public class LimitIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        return iterator.hasNext() && cursor < n;
+        return cursor < n && iterator.hasNext();
     }
 
     @Override
