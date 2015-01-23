@@ -2,7 +2,7 @@
 
 
 ##What?
-Enumerables is a wrapper for Java 8 collections offering functional methods like map and reduce while being mutable and (re-)iterable at all times.
+Enumerables is a wrapper for Java 8 collections offering functional methods like map and reduce while staying immutable and (re-)iterable at all times.
 
 In comparison to Stream, Enumerables improves the usability and readability of the code especially when dealing with small in-memory collections by removing the need of having a dedicated collection for each iteration.
 
