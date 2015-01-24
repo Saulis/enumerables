@@ -95,14 +95,16 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     /**
-     * Returns a new enumerable concatenated with the provided items.
+     * Concatenates the items with the provided iterable and returns the
+     * resulting items as a new enumerable.
      */
     public Enumerable<T> concat(T... items) {
         return new Enumerable<>(() -> new ConcatIterator(this.iterator(), new ArrayIterator<>(items)));
     }
 
     /**
-     * Returns a new enumerable concatenated with the provided iterable.
+     * Concatenates the items with the provided iterable and returns the
+     * resulting items as a new enumerable.
      */
     public Enumerable<T> concat(Iterable<T> items) {
         return new Enumerable<>(() -> new ConcatIterator(this.iterator(), items.iterator()));
@@ -186,8 +188,8 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     /**
-     * Returns a new enumerable containing items flattened with the provided
-     * mapping function.
+     * Flattens the items with the provided mapping function and returns the
+     * resulting items as a new enumerable.
      */
     public <R> Enumerable<R> flatMap(Function<T, R[]> mappingFunction) {
         Iterator<ArrayIterator<R>> iterator =
@@ -207,10 +209,16 @@ public class Enumerable<T> implements Iterable<T> {
         }
     }
 
-    public <K> Map<K, List<T>> groupBy(Function<T, K> function) {
-        return collect(Collectors.groupingBy(function));
+    /**
+     * Collects the enumerable into a grouping according to the provided classifier.
+     */
+    public <K> Map<K, List<T>> groupBy(Function<T, K> classifier) {
+        return collect(Collectors.groupingBy(classifier));
     }
 
+    /**
+     * Checks if the enumerable is empty.
+     */
     public boolean isEmpty() {
         return sizeIsExactly(0);
     }
@@ -220,54 +228,113 @@ public class Enumerable<T> implements Iterable<T> {
         return iteratorSupplier.get();
     }
 
+    /**
+     * Limits the size of the enumerable to the provided length and returns the
+     * resulting items as a new enumerable.
+     */
     public Enumerable<T> limit(long maxSize) {
         return new Enumerable<>(() -> new LimitIterator(this, maxSize));
     }
 
-    public <R> Enumerable<R> map(Function<T, R> function) {
-        return new Enumerable<>(() -> new MapIterator<>(this, function));
+    /**
+     * Maps the items using the provided mapping function and returns the
+     * resulting items as a new enumerable.
+     */
+    public <R> Enumerable<R> map(Function<T, R> mappingFunction) {
+        return new Enumerable<>(() -> new MapIterator<>(this, mappingFunction));
     }
 
-    public <R extends Comparable<R>> Optional<T> max(Function<T, R> function) {
-        return orderByDescending(function).findFirst();
+    /**
+     * Finds the maximum of the items using the provided function to map the items
+     * into comparable items first.
+     *
+     * Uses ordering and therefore forces iteration.
+     */
+    public <R extends Comparable<R>> Optional<T> max(Function<T, R> mappingFunction) {
+        return orderByDescending(mappingFunction).findFirst();
     }
 
-    public <R extends Comparable<R>> Optional<T> min(Function<T, R> function) {
-        return orderBy(function).findFirst();
+    /**
+     * Finds the minimum of the items using the provided function to map the items
+     * into comparable items first.
+     *
+     * Uses ordering and therefore forces iteration.
+     */
+    public <R extends Comparable<R>> Optional<T> min(Function<T, R> mappingFunction) {
+        return orderBy(mappingFunction).findFirst();
     }
 
+    /**
+     * Checks if none of the items match the provided predicate.
+     */
     public boolean noneMatch(Predicate<T> predicate) {
         return filter(predicate).isEmpty();
     }
 
+    /**
+     * Casts the items into provided type and returns the resulting items
+     * as a new enumerable.
+     */
     public <R> Enumerable<R> cast(Class<R> c) {
         return map(x -> (R) x);
     }
 
+    /**
+     * Filters the items by type and returns the resulting items as a new
+     * enumerable.
+     */
     public <R> Enumerable<R> filterType(Class<R> c) {
         return filter(x -> x.getClass().equals(c)).cast(c);
     }
 
+    /**
+     * Orders the items using the provided comparator and returns the resulting
+     * items as a new enumerable.
+     *
+     * Forces iteration when first item is fetched.
+     */
     public Enumerable<T> orderBy(Comparator<T> comparator) {
         return new Enumerable<>(() -> new OrderIterator<>(iterator(), comparator));
     }
 
+    /**
+     * Orders the items using the provided function to map items into comparable
+     * items and returns the resulting items as a new enumerable.
+     *
+     * Forces iteration when first item is fetched.
+     */
     public <R extends Comparable<R>> Enumerable<T> orderBy(Function<T, R> function) {
         return orderBy(Comparator.comparing(function));
     }
 
+    /**
+     * Orders the items in descending order and returns the resulting items as
+     * a new enumerable.
+     */
     public <R extends Comparable<R>> Enumerable<T> orderByDescending(Function<T, R> function) {
         return orderByDescending(Comparator.comparing(function));
     }
 
+    /**
+     * Orders the items in descending order and returns the resulting items as
+     * a new enumerable.
+     */
     public Enumerable<T> orderByDescending(Comparator<T> comparator) {
         return orderBy(comparator.reversed());
     }
 
+    /**
+     * Performs the provided action for each item and returns the original items
+     * as a new enumerable.
+     */
     public Enumerable<T> peek(Consumer<T> consumer) {
         return new Enumerable<>(() -> new PeekIterator<>(this, consumer));
     }
 
+    /**
+     * Constructs a enumerable consisting of a range of integers. Provided start
+     * and end arguments are inclusive.
+     */
     public static Enumerable<Integer> range(int from, int to) {
         if(from <= to) {
             return new Enumerable(() -> new FunctionIterator<>(from - 1, x -> x + 1, to - from + 1));
@@ -276,6 +343,12 @@ public class Enumerable<T> implements Iterable<T> {
         }
     }
 
+    /**
+     * Reduces the enumerable into a single value using the provided accumulator
+     * function.
+     *
+     * Forces iteration.
+     */
     public <R> R reduce(R seed, BiFunction<R, T, R> function) {
         R result = seed;
 
@@ -289,6 +362,12 @@ public class Enumerable<T> implements Iterable<T> {
         return result;
     }
 
+    /**
+     * Reduces the enumerable into a multiple values using the provided accumulator
+     * functions.
+     *
+     * Forces iteration, but iterates only once.
+     */
     public <R> List<R> reduce(Accumulator<T, R>... reductions) {
         List<R> res = new ArrayList<>();
         Iterator<T> iterator = iterator();
@@ -304,10 +383,19 @@ public class Enumerable<T> implements Iterable<T> {
         return res.subList(0, reductions.length);
     }
 
+    /**
+     * Constructs a new enumerable consisting of repeating values.
+     */
     public static <T> Enumerable<T> repeat(Supplier<T> supplier, int iterations) {
         return new Enumerable<>(() -> new RepeatIterator<>(supplier, iterations));
     }
 
+    /**
+     * Reverses the items in the enumerable and returns the resulting items
+     * as a new enumerable.
+     *
+     * Forces iteration.
+     */
     public Enumerable<T> reverse() {
         LinkedList<T> list = new LinkedList<>();
         forEach(x -> list.add(0, x));
@@ -316,8 +404,8 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     /**
-        Returns a new enumerable which will create a copy of the enumerable
-        during first iteration.
+     * Returns a new enumerable which will create a copy of the enumerable
+     * during its first iteration.
      */
     public Enumerable<T> save() {
         LinkedList<T> list = new LinkedList<>();
@@ -325,18 +413,31 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new SaveIterator<>(iterator(), list));
     }
 
+    /**
+     * Checks if the number of items in the enumerable is exactly the provided value.
+     */
     public boolean sizeIsExactly(long n) {
         return limit(n + 1).count() == n;
     }
 
+    /**
+     * Checks if the number of items in the enumerable is greater than the provided value.
+     */
     public boolean sizeIsGreaterThan(long n) {
         return limit(n + 1).count() == n + 1;
     }
 
+    /**
+     * Checks if the number of items in the enumerable is less than the provided value.
+     */
     public boolean sizeIsLessThan(long n) {
         return limit(n).count() < n;
     }
 
+    /**
+     * Skips a number of items in the enumerable and returns the remaining items
+     * as a new enumerable.
+     */
     public Enumerable<T> skip(long n) {
         return new Enumerable<>(() -> new SkipIterator<>(this, n));
     }
@@ -373,12 +474,12 @@ public class Enumerable<T> implements Iterable<T> {
                 .toArray();
     }
 
-    /*
-        Reduces the enumerable into a sum based on the provided mapping function.
-        Will convert numbers into doubles to perform the calculations. Use reduce
-        with a custom Accumulator if you need more precision.
-
-        As with all reduction functions, sum will force iteration.
+    /**
+     * Reduces the enumerable into a sum based on the provided mapping function.
+     * Will convert numbers into doubles to perform the calculations. Use reduce
+     * with a custom Accumulator if you need more precision.
+     *
+     * As with all reduction functions, sum will force iteration.
      */
     public <R extends Number> Optional<Double> sum(Function<T, R> mappingFunction) {
         if(isEmpty()) {
