@@ -40,7 +40,7 @@ public class Enumerable<T> implements Iterable<T> {
 
     /**
      * Constructs a new enumerable from an iterable object.
-     * Enumerable will iterate the iterable immediately to create a copy.
+     * The enumerable will iterate the iterable immediately to create a copy.
      */
     public static <T> Enumerable<T> copyOf(Iterable<T> items) {
         return of(items).copy();
@@ -80,6 +80,9 @@ public class Enumerable<T> implements Iterable<T> {
         return Optional.of(sumAndCount.get(0) / sumAndCount.get(1));
     }
 
+    /**
+     * Collects the enumerable. Stream collector objects can be used for collecting.
+     */
     public <R, A> R collect(Collector<T, A, R> collector) {
         Supplier<A> supplier = collector.supplier();
         BiConsumer<A, T> accumulator = collector.accumulator();
@@ -91,21 +94,31 @@ public class Enumerable<T> implements Iterable<T> {
         return finisher.apply(container);
     }
 
+    /**
+     * Returns a new enumerable concatenated with the provided items.
+     */
     public Enumerable<T> concat(T... items) {
         return new Enumerable<>(() -> new ConcatIterator(this.iterator(), new ArrayIterator<>(items)));
     }
 
+    /**
+     * Returns a new enumerable concatenated with the provided iterable.
+     */
     public Enumerable<T> concat(Iterable<T> items) {
         return new Enumerable<>(() -> new ConcatIterator(this.iterator(), items.iterator()));
     }
 
+    /**
+     * Checks if the enumerable contains the provided item.
+     */
     public boolean contains(T item) {
         return anyMatch(x -> x.equals(item));
     }
 
-    /*
-        Returns a copy of the enumerable. Will force iteration and is unaffected
-        by changes to the parent.
+    /**
+     * Returns a copy of the enumerable. The copy is unaffected by changes to the parent.
+     *
+     * Forces iteration.
      */
     public Enumerable<T> copy() {
         LinkedList<T> list = new LinkedList<>();
@@ -114,18 +127,32 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> list.iterator());
     }
 
+    /**
+     * Returns the size of the enumerable.
+     *
+     * Forces iteration, like any other reduce function.
+     */
     public int count() {
         return reduce(0, (acc, x) -> acc + 1);
     }
 
+    /**
+     * Returns a new enumerable containing only items that match the provided predicate.
+     */
     public Enumerable<T> filter(Predicate<T> predicate) {
         return filter((x, i) -> predicate.test(x));
     }
 
+    /**
+     * Returns a new enumerable containing only items that match the provided predicate.
+     */
     public Enumerable<T> filter(BiPredicate<T,Integer> predicate) {
         return new Enumerable<>(() -> new FilterIterator<>(this, predicate));
     }
 
+    /**
+     * Tries to return the first item of the enumerable.
+     */
     public Optional<T> findFirst() {
         Iterator<T> iterator = iterator();
 
@@ -136,10 +163,19 @@ public class Enumerable<T> implements Iterable<T> {
         return Optional.empty();
     }
 
+    /**
+     * Tries to return the last item of the enumerable.
+     *
+     * Uses ordering, which forces iteration.
+     */
     public Optional<T> findLast() {
         return reverse().findFirst();
     }
 
+    /**
+     * Tries to return the first and only item of the enumerable.
+     * If more than one items exists, NoSuchElementException is thrown.
+     */
     public Optional<T> findSingle() {
         if(sizeIsGreaterThan(1)) {
             throw new NoSuchElementException(
@@ -149,13 +185,20 @@ public class Enumerable<T> implements Iterable<T> {
         return findFirst();
     }
 
-    public <R> Enumerable<R> flatMap(Function<T, R[]> function) {
+    /**
+     * Returns a new enumerable containing items flattened with the provided
+     * mapping function.
+     */
+    public <R> Enumerable<R> flatMap(Function<T, R[]> mappingFunction) {
         Iterator<ArrayIterator<R>> iterator =
-                map(x -> new ArrayIterator<>(function.apply(x))).iterator();
+                map(x -> new ArrayIterator<>(mappingFunction.apply(x))).iterator();
 
         return new Enumerable<>(() -> new ConcatIterator<>(iterator));
     }
 
+    /**
+     * Iterates through all the items an performs the provided actions.
+     */
     public void forEach(BiConsumer<T, Integer> consumer) {
         int i = 0;
 
