@@ -11,6 +11,9 @@ public class Enumerable<T> implements Iterable<T> {
         this.iteratorSupplier = iteratorSupplier;
     }
 
+    /**
+     * Constructs an empty enumerable.
+     */
     public static <T> Enumerable<T> empty() {
         return new Enumerable<>(() -> new EmptyIterator<>());
     }
@@ -47,7 +50,7 @@ public class Enumerable<T> implements Iterable<T> {
         As with all reduction functions, average will force iteration.
      */
     public <R extends Number> Optional<Double> average(Function<T, R> mappingFunction) {
-        if(map(mappingFunction).isEmpty()) {
+        if(isEmpty()) {
             return Optional.empty();
         }
 
@@ -98,7 +101,7 @@ public class Enumerable<T> implements Iterable<T> {
     }
 
     public Enumerable<T> filter(Predicate<T> predicate) {
-        return filter((x,i) -> predicate.test(x));
+        return filter((x, i) -> predicate.test(x));
     }
 
     public Enumerable<T> filter(BiPredicate<T,Integer> predicate) {
@@ -325,8 +328,8 @@ public class Enumerable<T> implements Iterable<T> {
                 .reduce(0.0, (seed, x) -> seed + x.doubleValue()));
     }
 
-    /*
-        Collects the enumerable into an array with a size provided in the init function.
+    /**
+     * Collects the enumerable into an array with a size provided in the init function.
      */
     public T[] toArray(Function<Integer, T[]> initFunction) {
         Enumerable<T> saved = save();
@@ -337,21 +340,29 @@ public class Enumerable<T> implements Iterable<T> {
         return array;
     }
 
-    /*
-        Collects the whole enumerable into an array.
+    /**
+     * Collects the enumerable into an array. Determines the type from the first
+     * non-null element.
      */
     public T[] toArray() {
-        Optional<T> first = findFirst();
-
-        if(!first.isPresent()) {
+        if(isEmpty()) {
             return (T[])new Object[0];
         }
 
-        Class<?> aClass = first.get().getClass();
+        Optional<T> first = filter(x -> x != null).findFirst();
 
-        return toArray(size -> (T[]) Array.newInstance(aClass, size));
+        if(first.isPresent()) {
+            Class<?> firstClass = first.get().getClass();
+
+            return toArray(size -> (T[]) Array.newInstance(firstClass, size));
+        }
+
+        return toArray(size -> (T[]) Array.newInstance(Object.class, size));
     }
 
+    /**
+     * Collects the enumerable into a list.
+     */
     public List<T> toList() {
         return collect(Collectors.toList());
     }

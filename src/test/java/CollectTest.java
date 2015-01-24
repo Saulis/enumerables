@@ -64,5 +64,22 @@ public class CollectTest {
         assertThat(objects.length, is(0));
     }
 
+    @Test
+    public void arrayWithNullsIsCollected() {
+        Integer[] ints = Enumerable.of(null, 1).toArray();
 
+        assertThat(ints.length, is(2));
+    }
+
+    @Test
+    public void arrayWithOnlyNullsIsCollected() {
+        Object[] ints = Enumerable.of(null, null).toArray();
+
+        assertThat(ints.length, is(2));
+    }
+
+    @Test(expected = ArrayStoreException.class)
+    public void arrayWithDifferentTypesCannotBeCollected() {
+        Object[] enumerable = Enumerable.of("foo", 1, null).toArray();
+    }
 }
