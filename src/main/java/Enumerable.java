@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 public class Enumerable<T> implements Iterable<T> {
     private final Supplier<Iterator<T>> iteratorSupplier;
 
+    /**
+     * Constructs a new enumerable object.
+     * @param iteratorSupplier Supplier function that will return new iterators.
+     */
     public Enumerable(Supplier<Iterator<T>> iteratorSupplier) {
         this.iteratorSupplier = iteratorSupplier;
     }
@@ -18,36 +22,50 @@ public class Enumerable<T> implements Iterable<T> {
         return new Enumerable<>(() -> new EmptyIterator<>());
     }
 
+    /**
+     * Constructs a new enumerable from an iterable object. If the provided
+     * iterable is mutable, possible changes also affect the created enumerable.
+     * Use copy() and copyOf() to avoid this.
+     */
     public static <T> Enumerable<T> of(Iterable<T> items) {
         return new Enumerable<>(() -> items.iterator());
     }
 
+    /**
+     * Constructs a new enumerable from an arbitrary number of items.
+     */
     public static <T> Enumerable<T> of(T... items) {
         return new Enumerable<>(() -> new ArrayIterator<>(items));
     }
 
-    /*
-     * Returns a new enumerable constructed from the specified iterable.
+    /**
+     * Constructs a new enumerable from an iterable object.
      * Enumerable will iterate the iterable immediately to create a copy.
      */
     public static <T> Enumerable<T> copyOf(Iterable<T> items) {
         return of(items).copy();
     }
 
+    /**
+     * Checks if all items match the provided predicate.
+     */
     public boolean allMatch(Predicate<T> predicate) {
         return filter(predicate.negate()).isEmpty();
     }
 
+    /**
+     * Checks if any item matches the provided predicate.
+     */
     public boolean anyMatch(Predicate<T> predicate) {
         return !filter(predicate).isEmpty();
     }
 
-    /*
-        Reduces the enumerable into an average based on the provided mapping function.
-        Will convert numbers into doubles to perform the calculations. Use multi reduce
-        with custom Accumulators if you need more precision.
-
-        As with all reduction functions, average will force iteration.
+    /**
+     * Reduces the enumerable into an average based on the provided mapping function.
+     * Converts numbers into doubles to perform the calculations. Use multi reduce
+     * with custom Accumulators if you need more precision.
+     *
+     * As with all reduction functions, average will force iteration.
      */
     public <R extends Number> Optional<Double> average(Function<T, R> mappingFunction) {
         if(isEmpty()) {
