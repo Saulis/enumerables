@@ -71,7 +71,7 @@ List<Integer> mappedList = Stream.of(1, 2, 3)
 mappedList.stream().findFirst();
 mappedList.stream().findAny();
 ```
-Performance is of course important. However, code usability and readability is also important. Enumerables enables you to adjust the balance between performance and readability to whatever suits your needs. Enumerables uses lazy iteration where possible - in practice methods that reduce or order the collection will force iteration for the whole collection.
+Performance is of course important. However, code usability and readability is also important. Enumerables enables you to adjust the balance between performance and readability to whatever suits your needs. Enumerables uses lazy iteration where possible - in practice only methods that reduce or order the collection will force iteration for the whole collection.
 ```java
 Enumerable<Integer> ints = Enumerable.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 Enumerable<Integer> evens = ints.filter(x -> x % 2 == 0);
