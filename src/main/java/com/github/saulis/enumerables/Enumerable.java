@@ -149,6 +149,7 @@ public class Enumerable<T> implements Iterable<T> {
 
     /**
      * Returns a new enumerable containing only items that match the provided predicate.
+     *  Item index can be accessed using the integer argument in the predicate.
      */
     public Enumerable<T> filter(BiPredicate<T,Integer> predicate) {
         return new Enumerable<>(() -> new FilterIterator<>(this, predicate));
@@ -461,7 +462,8 @@ public class Enumerable<T> implements Iterable<T> {
 
     /**
      * Splits the enumerable into multiple enumerables using the provided predicate(s).
-     * @param predicates Predicates to match with.
+     * @param predicates Predicates to match with. Item index can be accessed using
+     *                   the integer argument in the predicate.
      * @return An array of enumerables splitted by the provided predicate(s).
      *         Resulting array will always have the size of number predicates +
      *         one. Last element in the array will hold items that don't match

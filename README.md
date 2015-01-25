@@ -11,19 +11,19 @@ In short, when using Enumerables, there's no in-between collecting the results a
 ```java
 // With Enumerables, you can do this:
 Enumerable<Integer> ints = Enumerable.range(1,10);
-ints.filter(x -> x % 2 == 0).forEach(System.out::println);
+ints.filter(x -> x % 2 == 0).forEach(x -> System.out.println(x));
 // -> 2,4,6,8,10
 
-ints.filter(x -> x % 2 != 0).forEach(System.out::println);
+ints.filter(x -> x % 2 != 0).forEach(x -> System.out.println(x));
 // -> 1,3,5,7,9
 
 // There's also a split function that you can use to optimize flow and performance.
 Enumerable<Integer>[] evensAndOdds = Enumerable.range(1, 10).split(x -> x % 2 == 0);
 
-evensAddOdd[0].forEach(System.out::println);
+evensAddOdd[0].forEach(x -> System.out.println(x));
 // -> 2,4,6,8,10
 
-evensAddOdds[1].forEach(System.out::println);
+evensAddOdds[1].forEach(x -> System.out.println(x));
 // -> 1,3,5,7,9
 
 // With Streams, given the same situation,
@@ -37,9 +37,6 @@ IntStream.rangeClosed(1, 10)
          .filter(x -> x % 2 != 0)
          .forEach(x -> System.out.println(x));
 // -> 1,3,5,7,9
-// IntStream and other typed streams are also really nitpicky
-// about the parameter types, so we can't use System.out.println(int i)
-// in it's short form even though it consumes integers.
 ```
 Enumerables is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) API where possible.
 
