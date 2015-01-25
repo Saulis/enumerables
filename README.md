@@ -40,6 +40,15 @@ IntStream.rangeClosed(1, 10)
 ```
 Enumerables is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) API where possible.
 
+Download it from Maven and give it a spin!
+```
+<dependency>
+  <groupId>com.github.saulis</groupId>
+  <artifactId>enumerables</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
 ##Why?
 Streams in Java 8 are built for performance and its autoclosing feature which stops you from re-iterating a stream can save you from for example accidentally querying a database multiple times on runtime.
 
