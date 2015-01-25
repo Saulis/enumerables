@@ -41,7 +41,7 @@ IntStream.rangeClosed(1, 10)
 Enumerables is mostly inspired by .NET's [IEnumerable](http://msdn.microsoft.com/en-us/library/ckzcawb8.aspx) extension methods, but it tries to resemble Java's [Stream](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) API where possible.
 
 ##Why?
-Streams in Java 8 are built for performance and it's autoclosing feature which stops you from re-iterating a stream can save you from for example accidentally querying a database multiple times on runtime.
+Streams in Java 8 are built for performance and its autoclosing feature which stops you from re-iterating a stream can save you from for example accidentally querying a database multiple times on runtime.
 
 However, it's not uncommon that you have a situation where you just have to re-iterate a collection multiple times.
 ```java
@@ -84,7 +84,8 @@ Enumerable<Integer> odds = ints.filter(x -> x % 2 != 0);
 // first time.
 Enumerable<Integer> copy = Enumerable.of(1,2,3).map(x -> timeConsumingStuff(x)).copy();
 
-// time consuming mapping stuff takes place here, colleting the copy to a list will iterate it through.
+// time consuming mapping stuff takes place here, collecting 
+// the copy to a list will iterate it through.
 List<Integer> ints1 = copy.toList();
 
 // re-iteration happens using the copy and no time consuming mapping actions are no longer done.
