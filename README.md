@@ -101,7 +101,7 @@ private Enumerable<Integer> doSomeRandomStuffWeWantToExtract(int n) {
                      .map(Random::nextInt);
 }
 ```
-###Check out the [Examples](src/test/java/Examples.java) for more!
+###Check out the [Examples](src/test/java/com/github/saulis/enumerables/Examples.java) for more!
 
 # Future features?
 - Distinct/Union/Intersect/Difference functions
