@@ -53,7 +53,7 @@ public class SplitTest {
     public void splitIsLazy() {
         List<Integer> itemsFetched = new ArrayList<>();
         Enumerable<Integer> infiniteEnumerable =
-                new Enumerable(() -> new FunctionIterator<>(0, x -> x + 1, x -> true));
+                new Enumerable(() -> new FunctionIterator<>(1, x -> x + 1, x -> true));
 
         Enumerable<Integer>[] split = infiniteEnumerable
                 .peek(x -> itemsFetched.add(x))

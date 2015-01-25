@@ -7,7 +7,7 @@ public class FunctionIteratorTest {
     @Test
     public void rangeIsConstructed() {
         Enumerable<Integer> range
-                = new Enumerable<>(() -> new FunctionIterator<>(0, x -> x + 1, 10));
+                = new Enumerable<>(() -> new FunctionIterator<>(1, x -> x + 1, 10));
 
         assertThat(range, contains(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     }

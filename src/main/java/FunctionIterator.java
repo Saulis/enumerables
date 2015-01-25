@@ -28,9 +28,10 @@ public class FunctionIterator<T> implements Iterator<T> {
     @Override
     public T next() {
         cursor++;
+        T value = seed;
 
-        seed = function.apply(seed);
+        seed = function.apply(value);
 
-        return seed;
+        return value;
     }
 }
